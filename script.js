@@ -46,9 +46,15 @@
   const menuBtn = document.querySelector('.menu-toggle');
   const nav = document.getElementById('nav');
   if (menuBtn && nav) {
+    const menuLabels = {
+      ru: { open: 'Открыть меню', close: 'Закрыть меню' },
+      en: { open: 'Open menu',    close: 'Close menu' },
+    };
     const setOpen = (open) => {
+      const lang = (document.documentElement.lang === 'en') ? 'en' : 'ru';
+      const labels = menuLabels[lang];
       menuBtn.setAttribute('aria-expanded', String(open));
-      menuBtn.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
+      menuBtn.setAttribute('aria-label', open ? labels.close : labels.open);
       nav.classList.toggle('is-open', open);
     };
     menuBtn.addEventListener('click', () => {
@@ -70,43 +76,61 @@
   const finePointer = window.matchMedia('(pointer: fine)').matches;
   const allowMotion = finePointer && !prefersReduced;
 
-  // --- Spotlight on card groups -------------------------------------------
+  // --- Spotlight on card groups (rAF-throttled) ---------------------------
   if (allowMotion) {
     const groups = document.querySelectorAll('[data-spotlight-group]');
     groups.forEach((group) => {
       const cards = group.children;
-      group.addEventListener('pointermove', (e) => {
+      let lastEvt = null;
+      let scheduled = false;
+      const flush = () => {
+        scheduled = false;
+        if (!lastEvt) return;
         for (const card of cards) {
           const r = card.getBoundingClientRect();
-          card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-          card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+          card.style.setProperty('--mx', (lastEvt.clientX - r.left) + 'px');
+          card.style.setProperty('--my', (lastEvt.clientY - r.top) + 'px');
           card.style.setProperty('--spot-active', '1');
         }
-      });
+      };
+      group.addEventListener('pointermove', (e) => {
+        lastEvt = e;
+        if (!scheduled) { scheduled = true; requestAnimationFrame(flush); }
+      }, { passive: true });
       group.addEventListener('pointerleave', () => {
+        lastEvt = null;
         for (const card of cards) card.style.setProperty('--spot-active', '0');
-      });
+      }, { passive: true });
     });
   }
 
-  // --- Magnetic buttons ----------------------------------------------------
+  // --- Magnetic buttons (rAF-throttled) -----------------------------------
   if (allowMotion) {
     const magnets = document.querySelectorAll('[data-magnetic]');
     const STRENGTH = 0.25;
     magnets.forEach((el) => {
-      el.addEventListener('pointermove', (e) => {
+      let lastEvt = null;
+      let scheduled = false;
+      const flush = () => {
+        scheduled = false;
+        if (!lastEvt) return;
         const r = el.getBoundingClientRect();
         const cx = r.left + r.width / 2;
         const cy = r.top + r.height / 2;
-        const dx = (e.clientX - cx) * STRENGTH;
-        const dy = (e.clientY - cy) * STRENGTH;
+        const dx = (lastEvt.clientX - cx) * STRENGTH;
+        const dy = (lastEvt.clientY - cy) * STRENGTH;
         el.style.setProperty('--mx-btn', dx.toFixed(2) + 'px');
         el.style.setProperty('--my-btn', dy.toFixed(2) + 'px');
-      });
+      };
+      el.addEventListener('pointermove', (e) => {
+        lastEvt = e;
+        if (!scheduled) { scheduled = true; requestAnimationFrame(flush); }
+      }, { passive: true });
       el.addEventListener('pointerleave', () => {
+        lastEvt = null;
         el.style.setProperty('--mx-btn', '0px');
         el.style.setProperty('--my-btn', '0px');
-      });
+      }, { passive: true });
     });
   }
 
@@ -374,11 +398,17 @@
   };
 
   const STORAGE_KEY = 'st-lang';
+  const safeStorageGet = (k) => {
+    try { return localStorage.getItem(k); } catch { return null; }
+  };
+  const safeStorageSet = (k, v) => {
+    try { localStorage.setItem(k, v); } catch { /* private mode / quota — ignore */ }
+  };
   const detectLang = () => {
-    const saved = localStorage.getItem(STORAGE_KEY);
+    const saved = safeStorageGet(STORAGE_KEY);
     if (saved === 'ru' || saved === 'en') return saved;
-    const nav = (navigator.language || 'ru').toLowerCase();
-    return nav.startsWith('ru') ? 'ru' : 'en';
+    const navLang = (navigator.language || 'ru').toLowerCase();
+    return navLang.startsWith('ru') ? 'ru' : 'en';
   };
   let currentLang = detectLang();
 
@@ -416,7 +446,7 @@
   if (langBtn) {
     langBtn.addEventListener('click', () => {
       currentLang = currentLang === 'ru' ? 'en' : 'ru';
-      localStorage.setItem(STORAGE_KEY, currentLang);
+      safeStorageSet(STORAGE_KEY, currentLang);
       applyI18n();
       renderChat();
     });
@@ -531,6 +561,8 @@
       setTimeout(() => chatInput && chatInput.focus(), 50);
     } else {
       chatPanel.hidden = true;
+      // Return focus to FAB for accessible dismiss
+      try { chatFab.focus({ preventScroll: true }); } catch { chatFab.focus(); }
     }
   };
 
