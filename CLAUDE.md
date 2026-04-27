@@ -6,6 +6,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Static landing page for **SecretTravel**, a concierge booking service (hotels, apartments, flights, tours, car rentals) with crypto payment (USDT TRC-20/ERC-20, BTC). The site is a single Russian/English bilingual page derived verbatim from `C:\Users\fear7\Desktop\Текстовый документ (2).txt` — that file is the source-of-truth for pricing percentages (50/60/65/70%), the ₽12,000 minimum, the excluded countries list (Egypt, Maldives, India, Vietnam, Dubai), and the Russia/CIS flight restriction. **Do not invent terms, percentages, or guarantees that are not in that document.**
 
+**Currency convention:** RU strings show `₽12 000`, EN strings show `$130` (≈12 000 ₽ at ~92 ₽/$). The booking form sets `preferred_currency` to `RUB` for `currentLang === 'ru'` and `USD` for `'en'`. If you change the rate, update **both** languages (`prices.c1.li3`, `prices.c2.li1`, `chat.r.prices`, `faq.a3` in `I18N.en`) and the form-payload mapping simultaneously.
+
+**Production:** https://secrettravel.vercel.app — deployed to Vercel from `main` (`origin/main` is `https://github.com/akira777777/SecretTravel.git`).
+
+**Backend:** anonymous booking requests are POSTed to a Supabase `bookings` table via raw `fetch()` from `script.js`. RLS allows `INSERT only` for `anon` (SELECT/UPDATE/DELETE revoked). Supabase project ref: `jvdshxutzgxhxopcgifj` (region eu-west-1). The publishable key (`sb_publishable_…`) is **intentionally** embedded in `script.js` — it is the browser-safe key, equivalent to `pk_live_…` in Stripe; the secret key (`sb_secret_…`) must **never** appear in any browser-shipped file.
+
 ## Running and previewing
 
 There is **no build step, no package.json, no dependencies**. The whole site is three files served as-is:
@@ -20,7 +26,7 @@ Reload the page after any edit. There is no test suite, no linter wired up, no C
 
 ## Architecture
 
-Three coupled files. The coupling is by convention only — there is no module system.
+Four coupled files plus a Supabase schema. The coupling is by convention only — there is no module system.
 
 ### `index.html` — semantic skeleton with i18n attributes
 
@@ -91,8 +97,34 @@ Adding a new chat topic requires:
 
 The `link` intent matches URLs and booking aggregators (`booking.com`, `airbnb.`, `expedia`, `skyscanner`, `kayak`) and routes to a "I'll forward this to the manager on Telegram" reply. User input is always escaped via `escapeHtml` before being inserted as a message; bot replies are inserted as HTML so the dictionary can include `<a>` tags.
 
-## Production scaffolding (besides the three coupled files)
+#### Booking form → Supabase
 
+`#booking` is a server-less form that POSTs to Supabase REST. The wiring lives at the bottom of the IIFE in `script.js`:
+
+- Constants `SUPABASE_URL` and `SUPABASE_KEY` are inlined (publishable key is browser-safe; see Project section).
+- Submit handler reads `FormData`, runs the honeypot check (`name="website_url"` — bots auto-fill it), then `bookingForm.checkValidity()` + `reportValidity()`.
+- Payload is built field-by-field, normalising empty strings to `null`, clamping `guests` to `[1, 50]`, and stamping `preferred_currency`/`language`/`source_page`/`user_agent`.
+- POST goes to `${SUPABASE_URL}/rest/v1/bookings` with `apikey`, `Authorization: Bearer …`, `Content-Type: application/json`, and `Prefer: return=minimal` (must stay `minimal` — `representation` requires SELECT, which is revoked).
+- 15-second `AbortController` timeout. `AbortError` is logged as `'timeout'`, not as raw object.
+- Status messages flow through `setStatus(key, kind)` which calls `t(key)` — so `booking.status.{sending,ok,err,invalid}` keys must exist in **both** languages.
+
+`bookings` table schema (Supabase project `jvdshxutzgxhxopcgifj`):
+- `id`, `created_at`, `service_type` (enum: hotel/apartment/flight/tour/car_rental)
+- `country`, `city`, `property_name`, `property_link`, `check_in`, `check_out`, `guests`
+- `contact_email` (required), `contact_telegram`, `notes`
+- `preferred_currency` (RUB/USD), `language` (ru/en), `source_page`, `user_agent`
+- `status` (new/seen/contacted/done/rejected, default `new`)
+- RLS policy `anon_insert_only`: anon can `INSERT` only, with `char_length` constraints that **mirror** the HTML `maxlength` attributes. **If you change a `maxlength` in the form, change the matching constraint** (and vice-versa) — drift will surface as RLS rejections without a clear client message.
+- `revoke select, update, delete on public.bookings from anon` is part of the migration; do not grant them back without an auth model in front.
+
+If you add a new field: (1) add `<input>` with `name=` matching the column, (2) add the column to the table via migration, (3) extend the RLS check, (4) add the field to `payload` in `script.js`, (5) add `data-i18n` keys for label in both languages.
+
+## Production scaffolding (besides the four coupled files)
+
+- `vercel.json` — Vercel deployment config. Read by the platform, not by site code. Three concerns live here:
+  - **Security headers** on `/(.*)`: HSTS (2-year preload), CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy, COOP, X-Content-Type-Options. **CSP `connect-src` must include `https://*.supabase.co`** for the booking form. CSP keeps `script-src 'unsafe-inline'` because of the inline language-detection script in `<head>`; moving to nonce requires a server render and breaks the no-build constraint.
+  - **Cache policy**: long-immutable cache is scoped to truly fingerprintable assets (`svg`, `woff2`, `png`, `ico`, …). Unfingerprinted `.css`/`.js`/`.html` are `must-revalidate` so a deploy is picked up immediately. Do not broaden the immutable rule back to `.css|.js` — it caused a real bug where browsers held a year-old `script.js` while a freshly deployed `index.html` referenced new i18n keys, surfacing as raw key strings on screen.
+  - **Redirects + cleanUrls**: `cleanUrls: true`, plus `301 /home → /` and `/index → /`.
 - `robots.txt` — allows all, disallows `/404.html`, points to `sitemap.xml`.
 - `sitemap.xml` — single-URL sitemap with `xhtml:link rel="alternate" hreflang` for ru/en/x-default. Update `<lastmod>` when content changes.
 - `404.html` — **self-contained**, inlines its own CSS variables (mirrors `--paper`/`--ink`/`--ox` from `styles.css`) and its own RU/EN dictionary inside an inline `<script>`. Does **not** load `styles.css` or `script.js`. **Fix-once-fix-twice applies**: if you change palette or copy in the main site, mirror it here. The page reads `localStorage['st-lang']` to match the visitor's language preference set on the main site.
@@ -108,11 +140,20 @@ The `link` intent matches URLs and booking aggregators (`booking.com`, `airbnb.`
   2. `sitemap.xml` — `<loc>` and all `<xhtml:link href>`.
   3. `robots.txt` — `Sitemap:` directive.
   (`404.html` uses relative URLs — no domain reference there.)
-- Crypto wallet addresses are not yet rendered — when adding them, place them in the `#pay` section and remember they may need different copy per network (TRC-20 vs ERC-20).
+- Crypto wallet addresses currently in `index.html` are **placeholders** (`TYourUSDTtrc20AddressHereXyz`, `1YourBitcoinAddressHereAbc`). The `[data-copy]` click handler is wired but copies the placeholder text. Replace before public launch; remember USDT may need different addresses per network (TRC-20 vs ERC-20).
+- Supabase project (`jvdshxutzgxhxopcgifj`) and `bookings` table are **already provisioned** with RLS — the booking form is live and persists submissions. Use Supabase Dashboard → Table Editor → `bookings` to view incoming requests, or query via Supabase MCP.
 
 ## Things to avoid
 
-- Do not introduce a build step, npm dependencies, or framework. The "no tooling" constraint is a feature.
+- Do not introduce a build step, npm dependencies, or framework. The "no tooling" constraint is a feature. The Supabase REST API is consumed via raw `fetch()` for this reason — do **not** install `@supabase/supabase-js` or `@supabase/ssr` (the Supabase dashboard's onboarding snippet is for Next.js and is not applicable here).
 - Do not split `script.js` into modules without first switching the script tag to `type="module"` and unwinding the IIFE. The current file deliberately uses one closure.
 - Do not extract translations to a separate JSON — the inlined dictionary keeps the site working from `file://` with zero fetch.
 - Do not soften the editorial aesthetic into generic dark-luxury or template-y card grids. The hairline-rule + Fraunces-italic + oxblood direction is the differentiator.
+- Do not put `sb_secret_…` (the Supabase secret/service-role key) into `script.js`, HTML, CSS, env files, or any committed artefact — it bypasses RLS. Only the `sb_publishable_…` key belongs in browser-shipped code. If the secret key leaks, rotate immediately in Supabase Dashboard → Settings → API.
+- Do not add `SELECT`, `UPDATE`, or `DELETE` privileges to the `anon` role on `public.bookings`. Reading and managing entries is for service-role / admin via the Supabase Dashboard or MCP.
+- Do not apply long-immutable `Cache-Control` to `.css`/`.js`/`.html` — these files are unfingerprinted, and immutable cache strands users on stale versions. Use `must-revalidate` for them and reserve immutable for content-stable binaries (fonts/images).
+- When changing the Supabase URL or anon key in `script.js`, also update `vercel.json` CSP `connect-src` to match the new origin (or revoke the old one).
+- When adding new copy or i18n keys, run a parity audit before shipping. The recipe (kept in session memory, not committed):
+  1. Find `i18nIdx = js.indexOf('I18N = {')` and bracket-balance to extract `ru: {…}` and `en: {…}` blocks.
+  2. Collect `[data-i18n*]` keys from HTML and `t('…')` / `setStatus('…')` / `showToast('…')` literals from JS.
+  3. Diff against both language dicts. The healthy state is: 0 missing in either language, 0 parity gaps, 0 unused.
