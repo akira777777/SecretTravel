@@ -158,6 +158,40 @@
     });
   }
 
+  // --- Hero mouse parallax (rAF-throttled) --------------------------------
+  if (allowMotion) {
+    const heroEl = document.querySelector('.hero');
+    const heroTitle = document.querySelector('.hero-title');
+    const heroLede = document.querySelector('.hero .lede');
+    const heroOrbs = document.querySelectorAll('.hero-orb');
+    if (heroEl && heroOrbs.length) {
+      let lx = 0, ly = 0, pScheduled = false;
+      const flushParallax = () => {
+        pScheduled = false;
+        const { width, height } = heroEl.getBoundingClientRect();
+        const nx = (lx - width / 2) / (width / 2);
+        const ny = (ly - height / 2) / (height / 2);
+        if (heroTitle) heroTitle.style.transform = `translate(${nx * -7}px, ${ny * -4}px)`;
+        if (heroLede) heroLede.style.transform = `translate(${nx * -3}px, ${ny * -2}px)`;
+        heroOrbs.forEach((orb, i) => {
+          const d = i === 0 ? 20 : 30;
+          orb.style.transform = `translate(${nx * d}px, ${ny * d}px)`;
+        });
+      };
+      heroEl.addEventListener('pointermove', (e) => {
+        const rect = heroEl.getBoundingClientRect();
+        lx = e.clientX - rect.left;
+        ly = e.clientY - rect.top;
+        if (!pScheduled) { pScheduled = true; requestAnimationFrame(flushParallax); }
+      }, { passive: true });
+      heroEl.addEventListener('pointerleave', () => {
+        if (heroTitle) heroTitle.style.transform = '';
+        if (heroLede) heroLede.style.transform = '';
+        heroOrbs.forEach((orb) => { orb.style.transform = ''; });
+      }, { passive: true });
+    }
+  }
+
   // --- Active nav link based on visible section ---------------------------
   const sections = document.querySelectorAll('main section[id]');
   const navLinks = nav ? nav.querySelectorAll('a[href^="#"]') : [];
@@ -211,6 +245,28 @@
         }
       });
     });
+  }
+
+  // --- Hero stat count-up animation ----------------------------------------
+  if (!prefersReduced && 'IntersectionObserver' in window) {
+    const countEl = document.querySelector('[data-i18n="hero.meta.1.k"]');
+    if (countEl) {
+      const io = new IntersectionObserver((entries) => {
+        if (!entries[0].isIntersecting) return;
+        io.disconnect();
+        let startTs = 0;
+        const end = 100, dur = 1400;
+        const tick = (ts) => {
+          if (!startTs) startTs = ts;
+          const p = Math.min((ts - startTs) / dur, 1);
+          const eased = 1 - Math.pow(1 - p, 3);
+          countEl.textContent = Math.round(eased * end) + '%';
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      }, { threshold: 0.6 });
+      io.observe(countEl);
+    }
   }
 
   // =========================================================================
@@ -333,6 +389,7 @@
       'chat.r.greet': 'Привет! Чем могу помочь — тарифы, страны, оплата, сроки или возврат?',
       'chat.r.link': 'Спасибо за ссылку! Передам менеджеру в Telegram — обычно отвечаем за 1–2 минуты. Пока могу рассказать про тарифы или оплату — что интереснее?',
       'chat.r.fallback': 'Я отвечу по тарифам, оплате, странам, срокам и возврату. Можете нажать на быстрые ответы ниже или прислать ссылку — передам менеджеру в Telegram.',
+      'toast.copied': 'Адрес скопирован',
     },
     en: {
       'meta.title': 'SecretTravel — booking hotels, flights and tours',
@@ -450,6 +507,7 @@
       'chat.r.greet': 'Hi! What can I help with — pricing, coverage, payment, timing or refunds?',
       'chat.r.link': 'Thanks for the link! I\'ll forward it to the manager on Telegram — usually replies within 1–2 minutes. Meanwhile I can cover pricing or payment — which interests you more?',
       'chat.r.fallback': 'I can answer about pricing, payment, coverage, timing and refunds. Tap a quick reply below or send a link — I\'ll forward it to the manager on Telegram.',
+      'toast.copied': 'Address copied',
     },
   };
 
@@ -537,7 +595,7 @@
     { intent: 'refund',  re: /(возврат|верну|refund|money\s*back|cancel)/i },
     { intent: 'contact', re: /(телеграм|telegram|менеджер|связ|contact|whatsapp|почт|email|manager|reach|talk)/i },
     { intent: 'greet',   re: /^\s*(прив|здрав|добры|hello|hi|hey|hola|good\s*(morning|day|evening))/i },
-    { intent: 'link',    re: /(https?:\/\/|www\.|booking\.com|airbnb\.|expedia|skyscanner|kayak)/i },
+    { intent: 'link',    re: /(https?:\/\/|www\.|booking\.com|airbnb\.|expedia|skyscanner|kayak|agoda\.com|ostrovok\.|aviasales\.|trip\.com)/i },
   ];
 
   const detectIntent = (text) => {
@@ -546,8 +604,6 @@
     }
     return 'fallback';
   };
-
-  const respondTo = (text) => t('chat.r.' + detectIntent(text));
 
   const escapeHtml = (s) => s
     .replace(/&/g, '&amp;')
@@ -640,5 +696,39 @@
       setChatOpen(false);
       chatFab.focus();
     }
+  });
+
+  // --- Copy to clipboard ---------------------------------------------------
+  let toastEl = null;
+  const showToast = (msgKey) => {
+    if (!toastEl) {
+      toastEl = document.createElement('div');
+      toastEl.className = 'toast';
+      toastEl.setAttribute('role', 'status');
+      document.body.appendChild(toastEl);
+    }
+    toastEl.textContent = t(msgKey);
+    toastEl.classList.add('is-visible');
+    if (toastEl._timer) clearTimeout(toastEl._timer);
+    toastEl._timer = setTimeout(() => toastEl.classList.remove('is-visible'), 2500);
+  };
+
+  document.querySelectorAll('[data-copy]').forEach((el) => {
+    el.addEventListener('click', () => {
+      const text = el.getAttribute('data-copy');
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => showToast('toast.copied'));
+      } else {
+        // fallback
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "absolute";
+        textArea.style.left = "-999999px";
+        document.body.prepend(textArea);
+        textArea.select();
+        try { document.execCommand('copy'); showToast('toast.copied'); } catch (error) {}
+        textArea.remove();
+      }
+    });
   });
 })();

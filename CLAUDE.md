@@ -34,30 +34,34 @@ The default contents in HTML are the Russian originals — they exist as a fallb
 
 Spotlight effects are opt-in via `data-spotlight-group` on a wrapper, and `data-magnetic` on a button. These are read by `script.js`.
 
-### `styles.css` — editorial paper aesthetic (committed POV)
+### `styles.css` — dark editorial aesthetic (committed POV)
 
-The visual direction is **"The Concierge Quarterly"** — letterpress travel journal × crypto private club. This is intentional, not a placeholder. When editing styles:
+The visual direction is **"The Concierge Quarterly"** — letterpress travel journal × crypto private club, rendered as a **dark theme**. This is intentional. When editing styles:
 
-- **Palette is fixed**: cream paper (`--paper`), ink near-black (`--ink`), oxblood accent (`--ox`) used for editorial flourishes, gold (`--gold`) reserved **only** for the dark contact card and chat avatar. Do not add purple/teal/generic gradients.
+- **Palette is fixed** (dark): deep navy `--paper` (`oklch(11%)`), `--paper-deep` (8%), `--paper-card` (14%), `--paper-ink` (17%) for layered surfaces; near-white `--ink` (`oklch(92%)`); oxblood `--ox` for editorial flourishes; `--gold` reserved for the contact card and chat avatar. Do not add purple/teal/generic gradients.
 - **Type stack is intentional**: Fraunces (display, italic at high opsz), Manrope (body), JetBrains Mono (eyebrow / tag / numbers / buttons). Don't introduce Inter or Space Grotesk.
-- **No box shadows on light surfaces.** Depth comes from `1px solid var(--rule)` hairlines and ink borders. The dark `.contact-inner` and chat panel are the only places shadows appear.
-- **Old-style numerals everywhere**: `font-feature-settings: 'onum' 1` is set globally. Numerals in the bento price tiles, hero stats, and step numbers must render as oldstyle figures.
+- **Shadows on raised dark surfaces only** — chat FAB, chat panel, and `.contact-inner` use `oklch(0% 0 0 / α)` pure-black shadows. No shadows on flat section surfaces.
+- **Old-style numerals everywhere**: `font-feature-settings: 'onum' 1` is set globally.
 - **Section heads auto-number** via CSS counters (`tile-counter`, etc.); adding a tile re-numbers automatically.
-- Animations are constrained to `transform` and `opacity` only. Reveal is gated by an `.is-in` class added by JS via `IntersectionObserver`. The `prefers-reduced-motion: reduce` block disables everything.
-- `content-visibility: auto` is set on `section` for paint perf — keep `.hero` overridden to `visible` so above-the-fold renders eagerly.
-- The body grain (`body::before` with `mix-blend-mode: multiply`) is dropped on screens ≤720px for scroll performance — keep that media query when refactoring.
+- Animations use `transform`, `opacity`, and the individual CSS `translate`/`rotate` properties. Individual transform properties and `transform` are separate cascade properties — they stack, which is what allows CSS keyframe float (`translate`) and JS parallax (`transform`) to run simultaneously on the hero orbs. All motion is inside `@media (prefers-reduced-motion: no-preference)`. The `prefers-reduced-motion: reduce` block at the end kills everything with `!important`.
+- `.is-in` (added by `IntersectionObserver`) gates `.reveal` transitions and eyebrow line draw-ins. Selector pattern: `.eyebrow.is-in::before` (hero, where the eyebrow itself has `.reveal`) and `.section-head.is-in .eyebrow::before` (other sections).
+- The body grain (`body::before` with `mix-blend-mode: screen`) is dropped on screens ≤720px. Dark theme requires `screen` not `multiply` — do not revert this blend mode.
+- `content-visibility: auto` on `section`; keep `.hero` overridden to `visible`.
 
 ### `script.js` — single IIFE, no modules
 
 All site behavior lives inside one `(() => { ... })();`. When adding features, stay inside the closure. The IIFE wires up, in order:
 
-1. `IntersectionObserver` for `.reveal` elements (one-shot `.is-in` toggle).
-2. `requestAnimationFrame`-throttled scroll progress bar via `--progress` CSS variable.
-3. Mobile menu (with bilingual `aria-label` via `menuLabels` lookup based on `<html lang>`).
-4. rAF-throttled pointer effects: spotlight groups and magnetic buttons. Both are gated on `pointer: fine` and `prefers-reduced-motion: no-preference`.
-5. Active-nav-link via a second `IntersectionObserver` on `main section[id]`.
-6. **i18n** — see below.
-7. **Chat manager** — see below.
+1. `IntersectionObserver` for `.reveal` elements (one-shot `.is-in` toggle) + stagger index assignment (`--stagger-i` custom property set on direct `.reveal` children of `.tiles`, `.bento`, `.timeline`, `.pay-grid`).
+2. rAF-throttled scroll progress bar (`--progress` CSS var) + scroll-direction nav hide (`.top--hidden` toggled on `.top` when scrolling down >8px, removed when scrolling up or `scrollY < 80`).
+3. Mobile menu (bilingual `aria-label` via `menuLabels` lookup on `<html lang>`).
+4. rAF-throttled pointer effects: spotlight groups and magnetic buttons — both gated on `pointer: fine` && `prefers-reduced-motion: no-preference`.
+5. **Hero mouse parallax** — `pointermove` on `.hero`, moves `.hero-title` at −7px depth, `.hero .lede` at −3px, and each `.hero-orb` at +20/+30px (opposite = foreground). Uses `style.transform`; compatible with CSS `translate` animation on orbs because they are separate CSS properties.
+6. Active-nav-link via a second `IntersectionObserver` on `main section[id]`.
+7. **FAQ smooth accordion** — intercepts `<summary>` clicks, animates `<p>` height/opacity using explicit `offsetHeight` reflow commits before setting transitions. Gated on `!prefersReduced`.
+8. **Hero stat count-up** — `IntersectionObserver` on `[data-i18n="hero.meta.1.k"]`, animates 0→100% with cubic ease-out on first intersection. i18n's `applyI18n()` will reset `textContent` to the translated value on language toggle — that's intentional.
+9. **i18n** — see below.
+10. **Chat manager** — see below.
 
 #### i18n pattern (critical)
 

@@ -61,6 +61,65 @@
     "paymentAccepted": "USDT (TRC-20, ERC-20), Bitcoin"
   }
   </script>
+  <!-- JSON-LD: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [{
+      "@type": "Question",
+      "name": "Почему 100% предоплата?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Это стандартная практика, которая позволяет нам сразу начать работу над вашим запросом. Жёстких дедлайнов нет — как только бронь будет подтверждена, мы пришлём вам все данные. Если по какой-то причине оформить не получится, деньги возвращаются в полном объёме на тот же реквизит."
+      }
+    }, {
+      "@type": "Question",
+      "name": "В какие страны вы не оформляете?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Мы не работаем с отелями в ряде популярных курортных направлений: Египет, Мальдивы, Индия, Вьетнам, Дубай и некоторые другие. Полный список уточняйте у нас — мы всегда подскажем альтернативы."
+      }
+    }, {
+      "@type": "Question",
+      "name": "Какие авиабилеты вы оформляете?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Только рейсы, не связанные с РФ и странами СНГ. Комиссия 50%, минимальная сумма — 12 000 ₽, оформляем за 1–7 дней до вылета."
+      }
+    }, {
+      "@type": "Question",
+      "name": "Можно ли забронировать «день в день»?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Да, но это требует оперативности — лучше планировать хотя бы за несколько часов. По популярным направлениям при бронировании день в день действует тариф 70%."
+      }
+    }, {
+      "@type": "Question",
+      "name": "Как происходит возврат?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Если бронь по объективным причинам не состоится, возврат производится быстро и в полном объёме на тот же реквизит, с которого пришла оплата."
+      }
+    }, {
+      "@type": "Question",
+      "name": "Помогаете ли при заселении?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Да. При заселении в отель мы остаёмся на связи и помогаем с возможными вопросами — депозит, late check-in и так далее."
+      }
+    }]
+  }
+  </script>
+  <script>
+    (function(){
+      try {
+        var saved = localStorage.getItem('st-lang');
+        var lang = saved === 'ru' || saved === 'en' ? saved : ((navigator.language || 'ru').toLowerCase().startsWith('ru') ? 'ru' : 'en');
+        document.documentElement.lang = lang;
+      } catch(e) {}
+    })();
+  </script>
 </head>
 <body>
 
@@ -309,6 +368,9 @@
         </div>
         <h3>USDT</h3>
         <p data-i18n-html="pay.usdt.p">Сети <strong>TRC-20</strong> и <strong>ERC-20</strong>.</p>
+        <div class="wallet-box">
+          <code class="wallet-addr" data-copy="TYourUSDTtrc20AddressHereXyz" aria-label="Copy USDT Address">TYourUSDTtrc20AddressHereXyz</code>
+        </div>
       </article>
       <article class="pay-card reveal">
         <div class="pay-icon" aria-hidden="true">
@@ -316,6 +378,9 @@
         </div>
         <h3>Bitcoin</h3>
         <p data-i18n="pay.btc.p">Оплата напрямую на наш кошелёк.</p>
+        <div class="wallet-box">
+          <code class="wallet-addr" data-copy="1YourBitcoinAddressHereAbc" aria-label="Copy Bitcoin Address">1YourBitcoinAddressHereAbc</code>
+        </div>
       </article>
       <article class="pay-card pay-refund reveal">
         <h3 data-i18n="pay.refund.h">Возврат</h3>

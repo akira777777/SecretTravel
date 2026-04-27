@@ -645,7 +645,7 @@ section { padding-block: var(--space-section); }
   gap: 1.5rem;
   min-height: 340px;
 }
-.card:hover { background: var(--paper); }
+.card:hover { background: var(--paper-ink); }
 .card:last-child { border-right: 0; }
 .card-lg {
   grid-row: span 2;
@@ -1123,8 +1123,8 @@ section { padding-block: var(--space-section); }
   letter-spacing: 0.14em;
   cursor: pointer;
   box-shadow:
-    0 14px 28px oklch(20% 0.025 270 / 0.18),
-    0 2px 6px oklch(20% 0.025 270 / 0.12);
+    0 14px 28px oklch(0% 0 0 / 0.45),
+    0 2px 6px oklch(0% 0 0 / 0.25);
   transition: transform 250ms var(--ease), background 250ms var(--ease);
   position: relative;
 }
@@ -1155,8 +1155,8 @@ section { padding-block: var(--space-section); }
   border: 1px solid var(--ink);
   border-radius: 4px;
   box-shadow:
-    0 28px 60px oklch(20% 0.025 270 / 0.22),
-    0 6px 12px oklch(20% 0.025 270 / 0.12);
+    0 28px 60px oklch(0% 0 0 / 0.55),
+    0 6px 12px oklch(0% 0 0 / 0.30);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -1182,7 +1182,7 @@ section { padding-block: var(--space-section); }
   width: 40px; height: 40px;
   border-radius: 50%;
   display: grid; place-items: center;
-  background: var(--ink);
+  background: var(--ox);
   color: var(--gold);
   font-family: var(--serif);
   font-style: italic;
@@ -1369,6 +1369,119 @@ section { padding-block: var(--space-section); }
   }
   .chat-fab-label { display: none; }
   .chat-fab { padding: 0.9rem; }
+}
+
+/* ============================================================================
+   Wallets & Toasts
+   ============================================================================ */
+.wallet-box {
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+.wallet-addr {
+  display: inline-block;
+  background: var(--paper);
+  padding: 0.5rem 0.75rem;
+  border-radius: 3px;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--ink-2);
+  border: 1px solid var(--rule);
+  cursor: pointer;
+  position: relative;
+  transition: border-color var(--dur-fast), color var(--dur-fast);
+  word-break: break-all;
+}
+.wallet-addr:hover {
+  border-color: var(--ox);
+  color: var(--ink);
+}
+.wallet-addr::after {
+  content: '';
+  display: inline-block;
+  width: 14px; height: 14px;
+  margin-left: 0.5rem;
+  vertical-align: text-bottom;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='9' y='9' width='13' height='13' rx='2' ry='2'></rect><path d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'></path></svg>") center/contain no-repeat;
+  mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='9' y='9' width='13' height='13' rx='2' ry='2'></rect><path d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'></path></svg>") center/contain no-repeat;
+  opacity: 0.6;
+}
+
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1000;
+  transition: transform 300ms var(--ease), opacity 300ms var(--ease);
+  box-shadow: 0 4px 12px oklch(0% 0 0 / 0.3);
+}
+.toast.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ============================================================================
+   Animations
+   ============================================================================ */
+@media (prefers-reduced-motion: no-preference) {
+  /* Hero orbs floating */
+  @keyframes orb-float {
+    0%, 100% { translate: 0px 0px; rotate: 0deg; }
+    42%       { translate: 0px -22px; rotate: 3deg; }
+    72%       { translate: 0px -8px; rotate: -2deg; }
+  }
+  .hero-orb:not(.hero-orb--alt) { animation: orb-float 9s ease-in-out infinite; }
+  .hero-orb--alt { animation: orb-float 13s ease-in-out infinite reverse; animation-delay: -5s; }
+
+  /* Background gradient breathing */
+  @keyframes bg-breathe {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.45; }
+  }
+  body::after { animation: bg-breathe 18s ease-in-out infinite; }
+
+  /* Eyebrow line draw-in on scroll reveal */
+  .eyebrow::before {
+    transform-origin: left;
+    transform: scaleX(0);
+    transition: transform 600ms var(--ease) 200ms;
+  }
+  .eyebrow.is-in::before,
+  .section-head.is-in .eyebrow::before { transform: scaleX(1); }
+
+  /* Step number warm glow on hover */
+  @keyframes step-glow {
+    0%, 100% { color: var(--ox); }
+    50%       { color: var(--gold); }
+  }
+  .step:hover .step-num { animation: step-glow 2s ease-in-out infinite; }
+
+  /* Card price scale on hover */
+  .card-price { transition: transform 400ms var(--ease); display: inline-block; }
+  .card:hover .card-price { transform: scale(1.06); }
+
+  /* Bento card and tile subtle lift on hover */
+  .bento .card { transition: background var(--dur), transform 350ms var(--ease); }
+  .bento .card:hover { transform: translateY(-3px); }
+  .tile { transition: background var(--dur), transform 350ms var(--ease); }
+  .tile:hover { transform: translateY(-3px); }
+
+  /* Pay card lift */
+  .pay-card { transition: background var(--dur), transform 300ms var(--ease); }
+  .pay-card:hover { transform: translateY(-3px); }
 }
 
 /* ============================================================================
