@@ -3,11 +3,16 @@
   const yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Note: motion is intentionally unconditional. We previously gated on
+  // prefers-reduced-motion, but that left desktop visitors with the OS toggle
+  // enabled looking at a static page while mobile (without the toggle) animated
+  // normally. Pointer-driven effects are still skipped on coarse pointers.
 
   // --- Reveal on scroll ----------------------------------------------------
   const targets = document.querySelectorAll('.reveal');
-  if (prefersReduced || !('IntersectionObserver' in window)) {
+  // Reveal animation is unconditional on browsers that support IntersectionObserver
+  // (matches mobile behaviour for desktop visitors with reduced-motion enabled).
+  if (!('IntersectionObserver' in window)) {
     targets.forEach((el) => el.classList.add('is-in'));
   } else {
     const io = new IntersectionObserver((entries) => {
@@ -96,9 +101,12 @@
     });
   });
 
-  // Skip pointer-driven effects entirely on coarse pointers / reduced motion.
+  // Pointer-driven effects (spotlight, magnetic, hero parallax, hero-trail) are
+  // skipped only on coarse pointers — they are not gated on reduced-motion any
+  // more, so desktop visitors with the OS-level toggle enabled see the same
+  // motion as mobile visitors.
   const finePointer = window.matchMedia('(pointer: fine)').matches;
-  const allowMotion = finePointer && !prefersReduced;
+  const allowMotion = finePointer;
 
   // --- Spotlight on card groups (rAF-throttled) ---------------------------
   if (allowMotion) {
@@ -257,7 +265,7 @@
   }
 
   // --- FAQ smooth accordion -----------------------------------------------
-  if (!prefersReduced) {
+  {
     document.querySelectorAll('.faq-item').forEach((item) => {
       const summary = item.querySelector('summary');
       const body = item.querySelector('p');
@@ -289,7 +297,7 @@
   }
 
   // --- Hero stat count-up animation ----------------------------------------
-  if (!prefersReduced && 'IntersectionObserver' in window) {
+  if ('IntersectionObserver' in window) {
     const countEl = document.querySelector('[data-i18n="hero.meta.1.k"]');
     if (countEl) {
       const io = new IntersectionObserver((entries) => {

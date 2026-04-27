@@ -1610,7 +1610,7 @@ section { padding-block: var(--space-section); }
 /* ============================================================================
    Animations
    ============================================================================ */
-@media (prefers-reduced-motion: no-preference) {
+@media all {
   /* Hero orbs floating */
   @keyframes orb-float {
     0%, 100% { translate: 0px 0px; rotate: 0deg; }
@@ -1661,7 +1661,7 @@ section { padding-block: var(--space-section); }
 /* ============================================================================
    Extra motion — idle, hover-enrichment, scroll-driven
    ============================================================================ */
-@media (prefers-reduced-motion: no-preference) {
+@media all {
 
   /* Brand letterpress star — slow infinite spin, paused on hover */
   @keyframes brand-rotate { from { rotate: 0deg; } to { rotate: 360deg; } }
@@ -1802,7 +1802,7 @@ section { padding-block: var(--space-section); }
 
 /* Scroll-driven motion — modern browsers only, fully optional */
 @supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
+  @media all {
 
     /* Card prices pop in as you scroll past, then keep idle sway */
     .card-price {
@@ -1890,10 +1890,8 @@ section { padding-block: var(--space-section); }
 /* ============================================================================
    Reduced motion
    ============================================================================ */
+/* Reduced-motion safety nets only — animations themselves are unconditional now,
+   matching mobile behaviour on desktops where the OS toggle is enabled. */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
-  .reveal { opacity: 1; transform: none; }
-  .hero-title .word { opacity: 1; transform: none; }
-  [data-spotlight-group] > *::before { display: none; }
 }
