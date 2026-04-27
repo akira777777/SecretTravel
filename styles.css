@@ -1729,13 +1729,18 @@ section { padding-block: var(--space-section); }
   .faq-item:nth-child(2n):not([open]) .faq-icon { animation-delay: -2s; }
   .faq-item:nth-child(3n):not([open]) .faq-icon { animation-delay: -4s; }
 
-  /* Marquee gets a subtle vertical drift on top of horizontal scroll */
+  /* Marquee gets a subtle vertical drift on top of horizontal scroll.
+     Layered as `translate` (separate property) so the horizontal `transform`
+     animation in `marquee` / `marquee-rev` keeps composing. */
   @keyframes marquee-drift {
     0%, 100% { translate: 0 0; }
     50%      { translate: 0 -3px; }
   }
-  .marquee-track {
+  .marquee-track:not(.marquee-track--rev) {
     animation: marquee 28s linear infinite, marquee-drift 5s ease-in-out infinite;
+  }
+  .marquee-track--rev {
+    animation: marquee-rev 36s linear infinite, marquee-drift 5s ease-in-out infinite;
   }
 
   /* Tile auto-counter lifts and warms on hover */
@@ -1750,9 +1755,15 @@ section { padding-block: var(--space-section); }
   }
   .section-head:hover h2::before { height: 2px; background: var(--gold); }
 
-  /* Trailing cursor orb in hero — soft oxblood ghost driven by JS */
+  /* Trailing cursor orb in hero — soft oxblood ghost driven by JS.
+     JS updates --tx/--ty on the .hero-trail element each frame, so we stay
+     on the compositor (translate) instead of triggering layout via top/left. */
   .hero-trail {
+    --tx: 0px;
+    --ty: 0px;
     position: absolute;
+    top: 0;
+    left: 0;
     width: 320px;
     height: 320px;
     border-radius: 50%;
@@ -1760,11 +1771,11 @@ section { padding-block: var(--space-section); }
     z-index: 0;
     background: radial-gradient(circle, var(--ox-soft) 0%, transparent 60%);
     opacity: 0;
-    translate: -50% -50%;
+    translate: calc(var(--tx) - 50%) calc(var(--ty) - 50%);
     transition: opacity 500ms var(--ease);
     mix-blend-mode: screen;
     filter: blur(8px);
-    will-change: left, top, opacity;
+    will-change: translate, opacity;
   }
   .hero.is-tracking .hero-trail { opacity: 0.55; }
 

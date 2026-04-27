@@ -213,8 +213,8 @@
       const lerp = () => {
         cx += (tx - cx) * 0.12;
         cy += (ty - cy) * 0.12;
-        trail.style.left = cx + 'px';
-        trail.style.top = cy + 'px';
+        trail.style.setProperty('--tx', cx + 'px');
+        trail.style.setProperty('--ty', cy + 'px');
         if (trailing) requestAnimationFrame(lerp);
       };
 
@@ -222,8 +222,8 @@
         const r = trailHero.getBoundingClientRect();
         cx = tx = e.clientX - r.left;
         cy = ty = e.clientY - r.top;
-        trail.style.left = cx + 'px';
-        trail.style.top = cy + 'px';
+        trail.style.setProperty('--tx', cx + 'px');
+        trail.style.setProperty('--ty', cy + 'px');
         trailHero.classList.add('is-tracking');
         if (!trailing) { trailing = true; requestAnimationFrame(lerp); }
       }, { passive: true });
