@@ -751,18 +751,70 @@
     renderChips();
   };
 
-  const handleUserMessage = (text, forcedIntent) => {
+  // --- AI chat via /api/chat (Vercel serverless) ----------------------------
+  // Max 5 AI calls per 60s — prevents runaway API spend on a static site
+  const _rl = { n: 0, t: 0 };
+  const checkAIRateLimit = () => {
+    const now = Date.now();
+    if (now > _rl.t) { _rl.n = 0; _rl.t = now + 60_000; }
+    if (_rl.n >= 5) return false;
+    _rl.n++;
+    return true;
+  };
+
+  const callAI = async (text) => {
+    const ctrl = new AbortController();
+    const tid = setTimeout(() => ctrl.abort(), 12000);
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text, lang: currentLang }),
+        signal: ctrl.signal,
+      });
+      clearTimeout(tid);
+      if (!res.ok) return null;
+      const { reply } = await res.json();
+      return typeof reply === 'string' && reply ? reply : null;
+    } catch {
+      clearTimeout(tid);
+      return null;
+    }
+  };
+
+  const handleUserMessage = async (text, forcedIntent) => {
     const trimmed = text.trim();
     if (!trimmed) return;
     appendMsg(escapeHtml(trimmed), 'user');
     const typing = showTyping();
-    const intent = forcedIntent || detectIntent(trimmed);
+
+    // Chip click → instant rule-based reply (zero API latency)
+    if (forcedIntent) {
+      const reply = t('chat.r.' + forcedIntent) || t('chat.r.fallback');
+      setTimeout(() => {
+        typing && typing.remove();
+        appendMsg(reply, 'bot');
+      }, 400 + Math.random() * 300);
+      return;
+    }
+
+    // Free-form text → try Claude AI, fall back to rule-based
+    if (checkAIRateLimit()) {
+      const aiReply = await callAI(trimmed);
+      typing && typing.remove();
+      if (aiReply) {
+        // AI reply is plain text — escape then render newlines as <br>
+        const safe = escapeHtml(aiReply).replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+        appendMsg(safe, 'bot');
+        return;
+      }
+    }
+
+    // Fallback: rule-based (rate limited or API unavailable)
+    const intent = detectIntent(trimmed);
     const reply = t('chat.r.' + intent) || t('chat.r.fallback');
-    const delay = 600 + Math.min(1200, trimmed.length * 18);
-    setTimeout(() => {
-      if (typing) typing.remove();
-      appendMsg(reply, 'bot');
-    }, delay);
+    typing && typing.remove();
+    appendMsg(reply, 'bot');
   };
 
   const setChatOpen = (open) => {
@@ -783,12 +835,20 @@
   if (chatCloseBtn) chatCloseBtn.addEventListener('click', () => setChatOpen(false));
 
   if (chatForm) {
-    chatForm.addEventListener('submit', (e) => {
+    const chatSend = chatForm.querySelector('.chat-send');
+    chatForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!chatInput) return;
-      const v = chatInput.value;
+      const v = chatInput.value.trim();
+      if (!v) return;
       chatInput.value = '';
-      handleUserMessage(v);
+      // Disable while waiting for AI response
+      chatInput.disabled = true;
+      if (chatSend) chatSend.disabled = true;
+      await handleUserMessage(v);
+      chatInput.disabled = false;
+      if (chatSend) chatSend.disabled = false;
+      chatInput.focus();
     });
   }
 
