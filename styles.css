@@ -189,7 +189,9 @@ strong { font-weight: 600; color: var(--ink); }
   -webkit-backdrop-filter: blur(8px) saturate(1.2);
   backdrop-filter: blur(8px) saturate(1.2);
   border-bottom: 1px solid var(--rule);
+  transition: transform 380ms var(--ease);
 }
+.top--hidden { transform: translateY(-110%); }
 .brand {
   display: inline-flex; align-items: baseline; gap: 0.6rem;
   font-family: var(--serif);
@@ -1048,7 +1050,8 @@ section { padding-block: var(--space-section); }
 .reveal {
   opacity: 0;
   transform: translateY(14px);
-  transition: opacity 700ms var(--ease), transform 700ms var(--ease);
+  transition: opacity 700ms var(--ease) calc(var(--stagger-i, 0) * 90ms),
+              transform 700ms var(--ease) calc(var(--stagger-i, 0) * 90ms);
   will-change: opacity, transform;
 }
 .reveal.is-in { opacity: 1; transform: none; will-change: auto; }

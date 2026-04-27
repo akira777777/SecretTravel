@@ -72,6 +72,30 @@
     });
   }
 
+  // --- Scroll-direction nav hide/show ------------------------------------
+  const topBar = document.querySelector('.top');
+  if (topBar) {
+    let lastScrollY = 0;
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      if (y < 80) {
+        topBar.classList.remove('top--hidden');
+      } else if (y > lastScrollY + 8) {
+        topBar.classList.add('top--hidden');
+      } else if (y < lastScrollY - 8) {
+        topBar.classList.remove('top--hidden');
+      }
+      lastScrollY = y;
+    }, { passive: true });
+  }
+
+  // --- Assign stagger indices to grouped reveal children -----------------
+  document.querySelectorAll('.tiles, .bento, .timeline, .pay-grid').forEach((group) => {
+    group.querySelectorAll(':scope > .reveal').forEach((el, i) => {
+      el.style.setProperty('--stagger-i', i);
+    });
+  });
+
   // Skip pointer-driven effects entirely on coarse pointers / reduced motion.
   const finePointer = window.matchMedia('(pointer: fine)').matches;
   const allowMotion = finePointer && !prefersReduced;
@@ -155,6 +179,38 @@
       if (visible) setActive(visible.target.id);
     }, { rootMargin: '-40% 0px -50% 0px', threshold: [0, 0.2, 0.5] });
     sections.forEach((s) => navIo.observe(s));
+  }
+
+  // --- FAQ smooth accordion -----------------------------------------------
+  if (!prefersReduced) {
+    document.querySelectorAll('.faq-item').forEach((item) => {
+      const summary = item.querySelector('summary');
+      const body = item.querySelector('p');
+      if (!summary || !body) return;
+      summary.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (item.open) {
+          body.style.height = body.scrollHeight + 'px';
+          body.style.overflow = 'hidden';
+          body.offsetHeight; // commit explicit height before transition
+          body.style.transition = 'height 300ms var(--ease), opacity 250ms ease';
+          body.style.height = '0';
+          body.style.opacity = '0';
+          setTimeout(() => { item.open = false; body.style.cssText = ''; }, 310);
+        } else {
+          item.open = true;
+          const h = body.scrollHeight;
+          body.style.height = '0';
+          body.style.overflow = 'hidden';
+          body.style.opacity = '0';
+          body.offsetHeight; // commit height: 0 before transition
+          body.style.transition = 'height 360ms var(--ease), opacity 320ms ease 40ms';
+          body.style.height = h + 'px';
+          body.style.opacity = '1';
+          setTimeout(() => { body.style.cssText = ''; }, 370);
+        }
+      });
+    });
   }
 
   // =========================================================================
