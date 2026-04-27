@@ -43,3 +43,5 @@ bot/*.sqlite
 .claude/sessions/
 .claude/cache/
 .claude/logs/
+
+.vercel

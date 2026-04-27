@@ -525,7 +525,7 @@ strong { font-weight: 600; color: var(--ink); }
   letter-spacing: -0.01em;
   color: var(--ink);
   will-change: transform;
-  animation: marquee 70s linear infinite;
+  animation: marquee 28s linear infinite;
 }
 .marquee-track > span:not([aria-hidden="true"]) { color: var(--ink); }
 .marquee-track > span[aria-hidden="true"] { color: var(--ox); opacity: 0.55; font-style: normal; }
@@ -1482,6 +1482,235 @@ section { padding-block: var(--space-section); }
   /* Pay card lift */
   .pay-card { transition: background var(--dur), transform 300ms var(--ease); }
   .pay-card:hover { transform: translateY(-3px); }
+}
+
+/* ============================================================================
+   Extra motion — idle, hover-enrichment, scroll-driven
+   ============================================================================ */
+@media (prefers-reduced-motion: no-preference) {
+
+  /* Brand letterpress star — slow infinite spin, paused on hover */
+  @keyframes brand-rotate { from { rotate: 0deg; } to { rotate: 360deg; } }
+  .brand-mark { animation: brand-rotate 22s linear infinite; }
+  .brand:hover .brand-mark { animation-play-state: paused; }
+
+  /* Scroll progress thread breathes from oxblood to gold */
+  @keyframes thread-breathe {
+    0%, 100% { background: var(--ox); }
+    50%      { background: var(--gold); }
+  }
+  .scroll-progress { animation: thread-breathe 8s ease-in-out infinite; }
+
+  /* Hero issue mark "N°. 01" drifts up like ink settling */
+  @keyframes issue-drift {
+    0%, 100% { translate: 0 0; opacity: 0.65; }
+    50%      { translate: 0 -8px; opacity: 0.95; }
+  }
+  .hero::before { animation: issue-drift 9s ease-in-out infinite; }
+
+  /* Pay icons gently bob, staggered */
+  @keyframes pay-bob {
+    0%, 100% { translate: 0 0; }
+    50%      { translate: 0 -4px; }
+  }
+  .pay-icon { animation: pay-bob 4.5s ease-in-out infinite; }
+  .pay-card:nth-child(2) .pay-icon { animation-delay: -1.5s; }
+  .pay-card:nth-child(3) .pay-icon { animation-delay: -3s; }
+
+  /* Step numerals shift between oxblood and gold like changing ink */
+  @keyframes step-color {
+    0%, 100% { color: var(--ox); }
+    50%      { color: var(--gold); }
+  }
+  .step-num { animation: step-color 12s ease-in-out infinite; }
+  .step:nth-child(2) .step-num { animation-delay: -3s; }
+  .step:nth-child(3) .step-num { animation-delay: -6s; }
+  .step:nth-child(4) .step-num { animation-delay: -9s; }
+
+  /* Big card prices sway like a hand-set printer plate */
+  @keyframes price-sway {
+    0%, 100% { rotate: 0deg; }
+    50%      { rotate: -1.2deg; }
+  }
+  .card-price {
+    animation: price-sway 7s ease-in-out infinite;
+    transform-origin: 0% 100%;
+  }
+  .card:hover .card-price { animation-play-state: paused; }
+
+  /* Aside oxblood rule glows toward gold */
+  @keyframes aside-glow {
+    0%, 100% { border-left-color: var(--ox); }
+    50%      { border-left-color: var(--gold); }
+  }
+  .aside { animation: aside-glow 6s ease-in-out infinite; }
+
+  /* FAQ chevron occasional wiggle to invite a click */
+  @keyframes faq-wiggle {
+    0%, 88%, 100% { rotate: 0deg; }
+    92%           { rotate: 12deg; }
+    96%           { rotate: -6deg; }
+  }
+  .faq-item:not([open]) .faq-icon { animation: faq-wiggle 7s ease-in-out infinite; }
+  .faq-item:nth-child(2n):not([open]) .faq-icon { animation-delay: -2s; }
+  .faq-item:nth-child(3n):not([open]) .faq-icon { animation-delay: -4s; }
+
+  /* Marquee gets a subtle vertical drift on top of horizontal scroll */
+  @keyframes marquee-drift {
+    0%, 100% { translate: 0 0; }
+    50%      { translate: 0 -3px; }
+  }
+  .marquee-track {
+    animation: marquee 28s linear infinite, marquee-drift 5s ease-in-out infinite;
+  }
+
+  /* Tile auto-counter lifts and warms on hover */
+  .tile::before {
+    transition: translate 380ms var(--ease), color 380ms var(--ease);
+  }
+  .tile:hover::before { translate: 0 -5px; color: var(--gold); }
+
+  /* Hairline rule under H2 thickens slightly on section hover */
+  .section-head h2::before {
+    transition: transform 800ms var(--ease) 100ms, height 400ms var(--ease), background 400ms;
+  }
+  .section-head:hover h2::before { height: 2px; background: var(--gold); }
+
+  /* Trailing cursor orb in hero — soft oxblood ghost driven by JS */
+  .hero-trail {
+    position: absolute;
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    background: radial-gradient(circle, var(--ox-soft) 0%, transparent 60%);
+    opacity: 0;
+    translate: -50% -50%;
+    transition: opacity 500ms var(--ease);
+    mix-blend-mode: screen;
+    filter: blur(8px);
+    will-change: left, top, opacity;
+  }
+  .hero.is-tracking .hero-trail { opacity: 0.55; }
+
+  /* Brand-name italic shimmer on hover */
+  @keyframes italic-shimmer {
+    0%   { color: var(--ox); }
+    50%  { color: var(--gold); letter-spacing: 0.03em; }
+    100% { color: var(--ox); }
+  }
+  .brand:hover .brand-name em { animation: italic-shimmer 1.2s ease-out; }
+
+  /* Wallet copy ripple */
+  @keyframes wallet-pulse {
+    0%   { box-shadow: 0 0 0 0 var(--ox-soft); }
+    100% { box-shadow: 0 0 0 16px transparent; }
+  }
+  .wallet-addr.is-copied { animation: wallet-pulse 700ms var(--ease); }
+
+  /* Chat avatar slow breath — feels alive */
+  @keyframes chat-breath {
+    0%, 100% { scale: 1; }
+    50%      { scale: 1.05; }
+  }
+  .chat-avatar { animation: chat-breath 3.5s ease-in-out infinite; }
+
+  /* Section eyebrow rule pulses width gently after reveal */
+  @keyframes eyebrow-pulse {
+    0%, 100% { width: 24px; }
+    50%      { width: 36px; }
+  }
+  .section-head.is-in .eyebrow::before {
+    animation: eyebrow-pulse 4s ease-in-out infinite 800ms;
+  }
+}
+
+/* Scroll-driven motion — modern browsers only, fully optional */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+
+    /* Card prices pop in as you scroll past, then keep idle sway */
+    .card-price {
+      animation:
+        price-sway 7s ease-in-out infinite,
+        scrub-pop linear both;
+      animation-timeline: auto, view();
+      animation-range: auto, entry 0% cover 35%;
+    }
+    @keyframes scrub-pop {
+      from { opacity: 0; scale: 0.55; }
+      to   { opacity: 1; scale: 1; }
+    }
+
+    /* Step numerals slide up as their cell enters */
+    .step-num {
+      animation:
+        step-color 12s ease-in-out infinite,
+        scrub-rise linear both;
+      animation-timeline: auto, view();
+      animation-range: auto, entry 0% cover 30%;
+    }
+    @keyframes scrub-rise {
+      from { opacity: 0; translate: 0 30px; }
+      to   { opacity: 1; translate: 0 0; }
+    }
+
+    /* Aside slides in from left while keeping its glow */
+    .aside {
+      animation:
+        aside-glow 6s ease-in-out infinite,
+        scrub-slide linear both;
+      animation-timeline: auto, view();
+      animation-range: auto, entry 0% cover 50%;
+    }
+    @keyframes scrub-slide {
+      from { opacity: 0; translate: -32px 0; }
+      to   { opacity: 1; translate: 0 0; }
+    }
+
+    /* Marquee fades in on first reveal */
+    .marquee-wrap {
+      animation: scrub-fade linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 25%;
+    }
+    @keyframes scrub-fade {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* Footer rises */
+    .foot {
+      animation: scrub-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 80%;
+    }
+
+    /* Hero orbs scale + fade as hero leaves the viewport — depth-of-field feel */
+    .hero-orb:not(.hero-orb--alt) {
+      animation:
+        orb-float 9s ease-in-out infinite,
+        orb-depart linear both;
+      animation-timeline: auto, view(block);
+      animation-range: auto, exit 0% exit 100%;
+    }
+    @keyframes orb-depart {
+      from { opacity: 0.6; scale: 1; }
+      to   { opacity: 0; scale: 1.4; }
+    }
+
+    /* Tiles tilt slightly as they enter — paper warming up */
+    .tile {
+      animation: tile-tilt linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 25%;
+    }
+    @keyframes tile-tilt {
+      from { opacity: 0; rotate: -1deg; translate: 0 14px; }
+      to   { opacity: 1; rotate: 0deg;  translate: 0 0; }
+    }
+  }
 }
 
 /* ============================================================================

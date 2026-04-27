@@ -190,6 +190,47 @@
         heroOrbs.forEach((orb) => { orb.style.transform = ''; });
       }, { passive: true });
     }
+
+    // --- Hero trailing cursor orb (lerp follow) -------------------------
+    const trailHero = document.querySelector('.hero');
+    if (trailHero) {
+      const trail = document.createElement('div');
+      trail.className = 'hero-trail';
+      trail.setAttribute('aria-hidden', 'true');
+      trailHero.appendChild(trail);
+
+      let tx = 0, ty = 0, cx = 0, cy = 0;
+      let trailing = false;
+
+      const lerp = () => {
+        cx += (tx - cx) * 0.12;
+        cy += (ty - cy) * 0.12;
+        trail.style.left = cx + 'px';
+        trail.style.top = cy + 'px';
+        if (trailing) requestAnimationFrame(lerp);
+      };
+
+      trailHero.addEventListener('pointerenter', (e) => {
+        const r = trailHero.getBoundingClientRect();
+        cx = tx = e.clientX - r.left;
+        cy = ty = e.clientY - r.top;
+        trail.style.left = cx + 'px';
+        trail.style.top = cy + 'px';
+        trailHero.classList.add('is-tracking');
+        if (!trailing) { trailing = true; requestAnimationFrame(lerp); }
+      }, { passive: true });
+
+      trailHero.addEventListener('pointermove', (e) => {
+        const r = trailHero.getBoundingClientRect();
+        tx = e.clientX - r.left;
+        ty = e.clientY - r.top;
+      }, { passive: true });
+
+      trailHero.addEventListener('pointerleave', () => {
+        trailHero.classList.remove('is-tracking');
+        trailing = false;
+      }, { passive: true });
+    }
   }
 
   // --- Active nav link based on visible section ---------------------------
@@ -713,11 +754,18 @@
     toastEl._timer = setTimeout(() => toastEl.classList.remove('is-visible'), 2500);
   };
 
+  const flashCopied = (el) => {
+    el.classList.remove('is-copied');
+    void el.offsetWidth;
+    el.classList.add('is-copied');
+    setTimeout(() => el.classList.remove('is-copied'), 800);
+  };
+
   document.querySelectorAll('[data-copy]').forEach((el) => {
     el.addEventListener('click', () => {
       const text = el.getAttribute('data-copy');
       if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(text).then(() => showToast('toast.copied'));
+        navigator.clipboard.writeText(text).then(() => { showToast('toast.copied'); flashCopied(el); });
       } else {
         // fallback
         const textArea = document.createElement("textarea");
@@ -726,7 +774,7 @@
         textArea.style.left = "-999999px";
         document.body.prepend(textArea);
         textArea.select();
-        try { document.execCommand('copy'); showToast('toast.copied'); } catch (error) {}
+        try { document.execCommand('copy'); showToast('toast.copied'); flashCopied(el); } catch (error) {}
         textArea.remove();
       }
     });
