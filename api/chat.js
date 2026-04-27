@@ -39,6 +39,15 @@ module.exports = async function handler(req, res) {
     return res.status(405).end('Method Not Allowed');
   }
 
+  if (!req.body) {
+    await new Promise((resolve, reject) => {
+      let raw = '';
+      req.on('data', chunk => { raw += chunk; });
+      req.on('end', () => { try { req.body = JSON.parse(raw); } catch { req.body = {}; } resolve(); });
+      req.on('error', reject);
+    });
+  }
+
   const { message, lang } = req.body || {};
   if (!message || typeof message !== 'string' || !message.trim()) {
     return res.status(400).json({ error: 'Missing message' });
