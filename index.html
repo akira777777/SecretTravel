@@ -137,6 +137,7 @@
     <a href="#prices" data-i18n="nav.prices">Тарифы</a>
     <a href="#scope" data-i18n="nav.scope">География</a>
     <a href="#order" data-i18n="nav.order">Как заказать</a>
+    <a href="#booking" data-i18n="nav.booking">Запрос</a>
     <a href="#pay" data-i18n="nav.pay">Оплата</a>
     <a href="#faq" data-i18n="nav.faq">FAQ</a>
   </nav>
@@ -169,7 +170,7 @@
       Помогаем комфортно и надёжно бронировать отели, апартаменты, авиабилеты и другие туристические услуги — даже в сложных ситуациях. Срочно, прозрачно, с возвратом, если не получилось.
     </p>
     <div class="hero-cta reveal">
-      <a class="btn btn-primary" href="#contact" data-magnetic>
+      <a class="btn btn-primary" href="#booking" data-magnetic>
         <span class="btn-label" data-i18n="hero.cta.primary">Оставить запрос</span>
         <span class="btn-arrow" aria-hidden="true">→</span>
       </a>
@@ -220,6 +221,38 @@
         <span aria-hidden="true">Афины</span><span aria-hidden="true">·</span>
         <span aria-hidden="true">Амстердам</span><span aria-hidden="true">·</span>
         <span aria-hidden="true">Париж</span><span aria-hidden="true">·</span>
+      </div>
+      <div class="marquee-track marquee-track--rev" aria-hidden="true">
+        <span>Лондон</span><span>·</span>
+        <span>Дублин</span><span>·</span>
+        <span>Осло</span><span>·</span>
+        <span>Стокгольм</span><span>·</span>
+        <span>Хельсинки</span><span>·</span>
+        <span>Рейкьявик</span><span>·</span>
+        <span>Копенгаген</span><span>·</span>
+        <span>Цюрих</span><span>·</span>
+        <span>Женева</span><span>·</span>
+        <span>Брюссель</span><span>·</span>
+        <span>Краков</span><span>·</span>
+        <span>Любляна</span><span>·</span>
+        <span>Загреб</span><span>·</span>
+        <span>София</span><span>·</span>
+        <span>Бухарест</span><span>·</span>
+        <span>Лондон</span><span>·</span>
+        <span>Дублин</span><span>·</span>
+        <span>Осло</span><span>·</span>
+        <span>Стокгольм</span><span>·</span>
+        <span>Хельсинки</span><span>·</span>
+        <span>Рейкьявик</span><span>·</span>
+        <span>Копенгаген</span><span>·</span>
+        <span>Цюрих</span><span>·</span>
+        <span>Женева</span><span>·</span>
+        <span>Брюссель</span><span>·</span>
+        <span>Краков</span><span>·</span>
+        <span>Любляна</span><span>·</span>
+        <span>Загреб</span><span>·</span>
+        <span>София</span><span>·</span>
+        <span>Бухарест</span><span>·</span>
       </div>
     </div>
   </section>
@@ -353,6 +386,97 @@
     <p class="aside reveal" data-i18n="order.aside">
       При заселении остаёмся на связи и помогаем с возможными вопросами — депозит, late check-in и тому подобное.
     </p>
+  </section>
+
+  <section id="booking" class="booking" aria-labelledby="booking-h">
+    <header class="section-head reveal">
+      <p class="eyebrow" data-i18n="booking.eyebrow">§ 4½ · Оформление запроса</p>
+      <h2 id="booking-h" data-i18n="booking.h2">Заполните форму — посчитаем и вернёмся.</h2>
+      <p class="section-sub" data-i18n="booking.sub">Минимум полей. Чем точнее ссылка и даты, тем быстрее подтверждение.</p>
+    </header>
+
+    <form class="booking-form reveal" id="booking-form" novalidate>
+      <div class="bf-grid">
+        <label class="bf-field bf-span-2">
+          <span class="bf-label" data-i18n="booking.f.service">Услуга</span>
+          <select name="service_type" required>
+            <option value="hotel" data-i18n="booking.opt.hotel">Отель</option>
+            <option value="apartment" data-i18n="booking.opt.apartment">Апартаменты</option>
+            <option value="flight" data-i18n="booking.opt.flight">Авиабилеты</option>
+            <option value="tour" data-i18n="booking.opt.tour">Экскурсия</option>
+            <option value="car_rental" data-i18n="booking.opt.car">Аренда авто</option>
+          </select>
+        </label>
+
+        <label class="bf-field">
+          <span class="bf-label" data-i18n="booking.f.country">Страна</span>
+          <input type="text" name="country" required maxlength="120" autocomplete="country-name" />
+        </label>
+
+        <label class="bf-field">
+          <span class="bf-label" data-i18n="booking.f.city">Город</span>
+          <input type="text" name="city" required maxlength="120" autocomplete="address-level2" />
+        </label>
+
+        <label class="bf-field bf-span-2">
+          <span class="bf-label" data-i18n="booking.f.property">Название отеля / описание</span>
+          <input type="text" name="property_name" required maxlength="300" />
+        </label>
+
+        <label class="bf-field bf-span-2">
+          <span class="bf-label" data-i18n="booking.f.link">Ссылка (Booking, Airbnb, Expedia…)</span>
+          <input type="url" name="property_link" maxlength="2000" inputmode="url" placeholder="https://" />
+        </label>
+
+        <label class="bf-field">
+          <span class="bf-label" data-i18n="booking.f.checkin">Заезд / вылет</span>
+          <input type="date" name="check_in" />
+        </label>
+
+        <label class="bf-field">
+          <span class="bf-label" data-i18n="booking.f.checkout">Выезд / возврат</span>
+          <input type="date" name="check_out" />
+        </label>
+
+        <label class="bf-field">
+          <span class="bf-label" data-i18n="booking.f.guests">Гостей</span>
+          <input type="number" name="guests" min="1" max="50" step="1" inputmode="numeric" />
+        </label>
+
+        <label class="bf-field">
+          <span class="bf-label" data-i18n="booking.f.email">Email <em>*</em></span>
+          <input type="email" name="contact_email" required maxlength="200" autocomplete="email" />
+        </label>
+
+        <label class="bf-field bf-span-2">
+          <span class="bf-label" data-i18n="booking.f.tg">Telegram (опционально)</span>
+          <input type="text" name="contact_telegram" maxlength="120" placeholder="@username" />
+        </label>
+
+        <label class="bf-field bf-span-2">
+          <span class="bf-label" data-i18n="booking.f.notes">Пожелания, бюджет, тип номера…</span>
+          <textarea name="notes" rows="3" maxlength="2000"></textarea>
+        </label>
+
+        <!-- honeypot — invisible, real users won't fill it -->
+        <label class="bf-honey" aria-hidden="true">
+          Leave this empty
+          <input type="text" name="website_url" tabindex="-1" autocomplete="off" />
+        </label>
+      </div>
+
+      <div class="bf-foot">
+        <button type="submit" class="btn btn-primary bf-submit" data-magnetic>
+          <span class="btn-label" data-i18n="booking.submit">Отправить запрос</span>
+          <span class="btn-arrow" aria-hidden="true">→</span>
+        </button>
+        <p class="bf-disclaimer" data-i18n="booking.disclaimer">
+          Никакого спама. После отправки мы свяжемся в течение 1–2 минут в рабочее время.
+        </p>
+      </div>
+
+      <div class="bf-status" role="status" aria-live="polite"></div>
+    </form>
   </section>
 
   <section id="pay" class="pay" aria-labelledby="pay-h">

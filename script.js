@@ -322,6 +322,7 @@
       'nav.prices': 'Тарифы',
       'nav.scope': 'География',
       'nav.order': 'Как заказать',
+      'nav.booking': 'Запрос',
       'nav.pay': 'Оплата',
       'nav.faq': 'FAQ',
       'nav.contact': 'Связаться',
@@ -383,6 +384,31 @@
       'order.s4.h': 'Получаете бронь',
       'order.s4.p': 'Подтверждение с номером и всеми инструкциями для заселения.',
       'order.aside': 'При заселении остаёмся на связи и помогаем с возможными вопросами — депозит, late check-in и тому подобное.',
+      'booking.eyebrow': '§ 4½ · Оформление запроса',
+      'booking.h2': 'Заполните форму — посчитаем и вернёмся.',
+      'booking.sub': 'Минимум полей. Чем точнее ссылка и даты, тем быстрее подтверждение.',
+      'booking.f.service': 'Услуга',
+      'booking.f.country': 'Страна',
+      'booking.f.city': 'Город',
+      'booking.f.property': 'Название отеля / описание',
+      'booking.f.link': 'Ссылка (Booking, Airbnb, Expedia…)',
+      'booking.f.checkin': 'Заезд / вылет',
+      'booking.f.checkout': 'Выезд / возврат',
+      'booking.f.guests': 'Гостей',
+      'booking.f.email': 'Email *',
+      'booking.f.tg': 'Telegram (опционально)',
+      'booking.f.notes': 'Пожелания, бюджет, тип номера…',
+      'booking.opt.hotel': 'Отель',
+      'booking.opt.apartment': 'Апартаменты',
+      'booking.opt.flight': 'Авиабилеты',
+      'booking.opt.tour': 'Экскурсия',
+      'booking.opt.car': 'Аренда авто',
+      'booking.submit': 'Отправить запрос',
+      'booking.disclaimer': 'Никакого спама. После отправки свяжемся в течение 1–2 минут в рабочее время.',
+      'booking.status.sending': 'Отправляем…',
+      'booking.status.ok': '✓ Запрос принят. Свяжемся в течение 1–2 минут.',
+      'booking.status.err': '✗ Не удалось отправить. Попробуйте ещё раз или напишите в Telegram.',
+      'booking.status.invalid': '✗ Заполните обязательные поля корректно.',
       'pay.eyebrow': '§ 5 · Оплата и возврат',
       'pay.h2': 'Принимаем удобные для вас способы.',
       'pay.usdt.p': 'Сети <strong>TRC-20</strong> и <strong>ERC-20</strong>.',
@@ -440,6 +466,7 @@
       'nav.prices': 'Pricing',
       'nav.scope': 'Coverage',
       'nav.order': 'How to order',
+      'nav.booking': 'Request',
       'nav.pay': 'Payment',
       'nav.faq': 'FAQ',
       'nav.contact': 'Contact',
@@ -471,10 +498,10 @@
       'prices.c1.h': 'Standard rate of the stay cost',
       'prices.c1.li1': '<strong>65%</strong> — popular destinations: Czechia, Serbia, Poland, Georgia, Turkey, etc.',
       'prices.c1.li2': '<strong>70%</strong> — same-day bookings for these destinations.',
-      'prices.c1.li3': 'Minimum order — <strong>₽12,000</strong> or USD equivalent at the day\'s rate.',
+      'prices.c1.li3': 'Minimum order — <strong>$130</strong> (or ruble equivalent at the day\'s rate).',
       'prices.c2.tag': 'Flights',
       'prices.c2.h': 'Commission on the ticket price',
-      'prices.c2.li1': 'Minimum — <strong>₽12,000</strong>.',
+      'prices.c2.li1': 'Minimum — <strong>$130</strong>.',
       'prices.c2.li2': 'Booked <strong>1–7 days</strong> before departure.',
       'prices.c3.tag': 'Tours & rentals',
       'prices.c3.h': 'Tours and car rentals',
@@ -501,6 +528,31 @@
       'order.s4.h': 'You get the booking',
       'order.s4.p': 'Confirmation with the booking number and all check-in instructions.',
       'order.aside': 'We stay in touch during check-in and help with any questions — deposit, late check-in and so on.',
+      'booking.eyebrow': '§ 4½ · Booking request',
+      'booking.h2': 'Fill in the form — we\'ll quote and follow up.',
+      'booking.sub': 'Minimum fields. The sharper the link and dates, the faster the confirmation.',
+      'booking.f.service': 'Service',
+      'booking.f.country': 'Country',
+      'booking.f.city': 'City',
+      'booking.f.property': 'Hotel name / description',
+      'booking.f.link': 'Link (Booking, Airbnb, Expedia…)',
+      'booking.f.checkin': 'Check-in / departure',
+      'booking.f.checkout': 'Check-out / return',
+      'booking.f.guests': 'Guests',
+      'booking.f.email': 'Email *',
+      'booking.f.tg': 'Telegram (optional)',
+      'booking.f.notes': 'Preferences, budget, room type…',
+      'booking.opt.hotel': 'Hotel',
+      'booking.opt.apartment': 'Apartment',
+      'booking.opt.flight': 'Flight',
+      'booking.opt.tour': 'Tour',
+      'booking.opt.car': 'Car rental',
+      'booking.submit': 'Send request',
+      'booking.disclaimer': 'No spam. We\'ll get back to you within 1–2 minutes during working hours.',
+      'booking.status.sending': 'Sending…',
+      'booking.status.ok': '✓ Request received. We\'ll be in touch in 1–2 minutes.',
+      'booking.status.err': '✗ Couldn\'t send. Please try again or message us on Telegram.',
+      'booking.status.invalid': '✗ Please fill required fields correctly.',
       'pay.eyebrow': '§ 5 · Payment & refund',
       'pay.h2': 'Whatever\'s convenient for you.',
       'pay.usdt.p': 'Networks <strong>TRC-20</strong> and <strong>ERC-20</strong>.',
@@ -514,7 +566,7 @@
       'faq.q2': 'Which countries don\'t you cover?',
       'faq.a2': 'We don\'t book hotels in some resort regions: Egypt, Maldives, India, Vietnam, Dubai and a few others. Ask us for the full list — we\'ll always suggest an alternative.',
       'faq.q3': 'Which flights do you book?',
-      'faq.a3': 'Only flights not connected to Russia and CIS. 50% commission, minimum ₽12,000, booked 1–7 days before departure.',
+      'faq.a3': 'Only flights not connected to Russia and CIS. 50% commission, minimum $130, booked 1–7 days before departure.',
       'faq.q4': 'Can you book same-day?',
       'faq.a4': 'Yes, but it needs speed — plan at least a few hours ahead. For popular destinations, same-day bookings carry a 70% rate.',
       'faq.q5': 'How does the refund work?',
@@ -539,7 +591,7 @@
       'chat.chip.timing': 'Timing',
       'chat.chip.refund': 'Refund',
       'chat.chip.contact': 'Talk to manager',
-      'chat.r.prices': 'Hotels — 60% of stay cost (popular destinations 65%, same-day 70%). Flights — 50%. Tours — 50%, car rental — 60%. Minimum order — ₽12,000. Want to send a specific link?',
+      'chat.r.prices': 'Hotels — 60% of stay cost (popular destinations 65%, same-day 70%). Flights — 50%. Tours — 50%, car rental — 60%. Minimum order — $130. Want to send a specific link?',
       'chat.r.payment': 'We accept USDT (TRC-20 / ERC-20) and BTC. 100% prepayment before we start — standard practice so we can begin immediately. If the booking falls through, full refund to the same wallet.',
       'chat.r.scope': 'We cover most countries, especially European cities and self check-in apartments. We don\'t handle Egypt, Maldives, India, Vietnam, Dubai. Flights — only those unconnected to Russia and CIS.',
       'chat.r.timing': 'Flights — booked 1–7 days before departure. Same-day hotels are possible but need speed — best to plan a few hours ahead.',
@@ -760,6 +812,94 @@
     el.classList.add('is-copied');
     setTimeout(() => el.classList.remove('is-copied'), 800);
   };
+
+  // =========================================================================
+  // Booking form → Supabase
+  // =========================================================================
+  const SUPABASE_URL = 'https://jvdshxutzgxhxopcgifj.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_glUpV-cOu4n9K1pfjt7HpA_NziuJ7kn';
+  const bookingForm = document.getElementById('booking-form');
+  if (bookingForm) {
+    const statusEl = bookingForm.querySelector('.bf-status');
+    const submitBtn = bookingForm.querySelector('.bf-submit');
+
+    const setStatus = (key, kind) => {
+      if (!statusEl) return;
+      statusEl.classList.remove('is-ok', 'is-err');
+      if (kind) statusEl.classList.add(kind === 'ok' ? 'is-ok' : 'is-err');
+      statusEl.textContent = key ? t(key) : '';
+    };
+
+    bookingForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      setStatus(null);
+
+      const fd = new FormData(bookingForm);
+
+      // Honeypot — bots often fill every field they see, including hidden-label ones.
+      if ((fd.get('website_url') || '').toString().trim() !== '') {
+        // Pretend success silently so the bot moves on.
+        setStatus('booking.status.ok', 'ok');
+        bookingForm.reset();
+        return;
+      }
+
+      // Basic native validation
+      if (!bookingForm.checkValidity()) {
+        bookingForm.reportValidity();
+        setStatus('booking.status.invalid', 'err');
+        return;
+      }
+
+      const guestsRaw = (fd.get('guests') || '').toString().trim();
+      const payload = {
+        service_type: (fd.get('service_type') || '').toString(),
+        country: (fd.get('country') || '').toString().trim(),
+        city: (fd.get('city') || '').toString().trim(),
+        property_name: (fd.get('property_name') || '').toString().trim(),
+        property_link: (fd.get('property_link') || '').toString().trim() || null,
+        check_in: (fd.get('check_in') || '').toString() || null,
+        check_out: (fd.get('check_out') || '').toString() || null,
+        guests: guestsRaw ? Math.max(1, Math.min(50, parseInt(guestsRaw, 10) || 0)) || null : null,
+        contact_email: (fd.get('contact_email') || '').toString().trim(),
+        contact_telegram: (fd.get('contact_telegram') || '').toString().trim() || null,
+        notes: (fd.get('notes') || '').toString().trim() || null,
+        preferred_currency: currentLang === 'en' ? 'USD' : 'RUB',
+        language: currentLang,
+        source_page: 'landing',
+        user_agent: (navigator.userAgent || '').slice(0, 400),
+      };
+
+      submitBtn && (submitBtn.disabled = true);
+      setStatus('booking.status.sending');
+
+      try {
+        const res = await fetch(SUPABASE_URL + '/rest/v1/bookings', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_KEY,
+            'Prefer': 'return=minimal',
+          },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          const errText = await res.text().catch(() => '');
+          console.warn('Booking submit failed:', res.status, errText);
+          setStatus('booking.status.err', 'err');
+          return;
+        }
+        setStatus('booking.status.ok', 'ok');
+        bookingForm.reset();
+      } catch (err) {
+        console.warn('Booking submit error:', err);
+        setStatus('booking.status.err', 'err');
+      } finally {
+        submitBtn && (submitBtn.disabled = false);
+      }
+    });
+  }
 
   document.querySelectorAll('[data-copy]').forEach((el) => {
     el.addEventListener('click', () => {
