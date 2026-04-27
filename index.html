@@ -4,41 +4,76 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="color-scheme" content="dark" />
-  <title>SecretTravel — бронируем отели, авиа и экскурсии</title>
-  <meta name="description" content="SecretTravel — концьерж-бронирование отелей, апартаментов, авиабилетов, экскурсий и аренды авто. Прямое подтверждение, оплата в USDT/BTC, возврат если не вышло." />
+  <meta name="theme-color" content="#1a1411" />
+  <title data-i18n="meta.title">SecretTravel — бронируем отели, авиа и экскурсии</title>
+  <meta name="description" data-i18n-attr="content:meta.description" content="SecretTravel — концьерж-бронирование отелей, апартаментов, авиабилетов, экскурсий и аренды авто. Прямое подтверждение, оплата в USDT/BTC, возврат если не вышло." />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" data-i18n-attr="content:meta.title" content="SecretTravel — бронируем отели, авиа и экскурсии" />
+  <meta property="og:description" data-i18n-attr="content:meta.description" content="Концьерж-бронирование. Прямое подтверждение, оплата в USDT/BTC, возврат если не вышло." />
+  <meta property="og:locale" content="ru_RU" />
+  <meta property="og:locale:alternate" content="en_US" />
+
+  <!-- Favicon — inline gold spark -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%231a1411%22/%3E%3Cpath%20d%3D%22M16%204l2.4%209.6L28%2016l-9.6%202.4L16%2028l-2.4-9.6L4%2016l9.6-2.4z%22%20fill%3D%22%23f0c87a%22/%3E%3C/svg%3E" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600&family=Manrope:wght@300;400;500;600;700&display=swap" />
   <link rel="stylesheet" href="styles.css" />
+
+  <!-- JSON-LD: TravelAgency -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TravelAgency",
+    "name": "SecretTravel",
+    "description": "Concierge booking of hotels, apartments, flights, tours and car rentals. Crypto payments accepted.",
+    "url": "https://secrettravel.example",
+    "areaServed": "Worldwide except select resort regions",
+    "priceRange": "₽₽",
+    "paymentAccepted": "USDT (TRC-20, ERC-20), Bitcoin"
+  }
+  </script>
 </head>
 <body>
 
-<div class="scroll-progress" role="progressbar" aria-label="Прогресс чтения" aria-hidden="true"></div>
+<a class="skip-link" href="#top" data-i18n="a11y.skip">Перейти к содержимому</a>
+
+<div class="scroll-progress" role="progressbar" aria-label="Reading progress" aria-hidden="true"></div>
 
 <header class="top">
-  <a class="brand" href="#top" aria-label="SecretTravel — на главную">
+  <a class="brand" href="#top" aria-label="SecretTravel">
     <span class="brand-mark" aria-hidden="true">✦</span>
     <span class="brand-name">Secret<em>Travel</em></span>
   </a>
-  <nav aria-label="Основная навигация" class="nav" id="nav">
-    <a href="#how">Как работаем</a>
-    <a href="#prices">Тарифы</a>
-    <a href="#scope">География</a>
-    <a href="#order">Как заказать</a>
-    <a href="#pay">Оплата</a>
-    <a href="#faq">FAQ</a>
+  <nav aria-label="Main" class="nav" id="nav">
+    <a href="#how" data-i18n="nav.how">Как работаем</a>
+    <a href="#prices" data-i18n="nav.prices">Тарифы</a>
+    <a href="#scope" data-i18n="nav.scope">География</a>
+    <a href="#order" data-i18n="nav.order">Как заказать</a>
+    <a href="#pay" data-i18n="nav.pay">Оплата</a>
+    <a href="#faq" data-i18n="nav.faq">FAQ</a>
   </nav>
-  <a class="btn btn-ghost top-cta" href="#contact">Связаться</a>
-  <button class="menu-toggle" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="nav">
-    <span></span><span></span><span></span>
-  </button>
+  <div class="top-tools">
+    <button class="lang-toggle" type="button" data-lang-toggle aria-label="Switch language">
+      <span class="lang-opt" data-lang="ru">RU</span>
+      <span class="lang-sep" aria-hidden="true">/</span>
+      <span class="lang-opt" data-lang="en">EN</span>
+    </button>
+    <a class="btn btn-ghost top-cta" href="#contact" data-i18n="nav.contact">Связаться</a>
+    <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
 </header>
 
 <main id="top">
 
   <section class="hero" aria-labelledby="hero-h">
-    <p class="eyebrow reveal">Концьерж&#8209;бронирование</p>
-    <h1 id="hero-h" class="reveal hero-title" data-split>
+    <p class="eyebrow reveal" data-i18n="hero.eyebrow">Концьерж‑бронирование</p>
+    <h1 id="hero-h" class="reveal hero-title" data-i18n-html="hero.title">
       <span class="word">Бронируем</span>
       <span class="word">там,</span>
       <span class="word">где</span>
@@ -46,29 +81,29 @@
       <span class="word"><em>разводят</em></span>
       <span class="word"><em>руками.</em></span>
     </h1>
-    <p class="lede reveal">
+    <p class="lede reveal" data-i18n="hero.lede">
       Помогаем комфортно и надёжно бронировать отели, апартаменты, авиабилеты и другие туристические услуги — даже в сложных ситуациях. Срочно, прозрачно, с возвратом, если не получилось.
     </p>
     <div class="hero-cta reveal">
       <a class="btn btn-primary" href="#contact" data-magnetic>
-        <span class="btn-label">Оставить запрос</span>
+        <span class="btn-label" data-i18n="hero.cta.primary">Оставить запрос</span>
         <span class="btn-arrow" aria-hidden="true">→</span>
       </a>
-      <a class="btn btn-ghost" href="#prices" data-magnetic>Посмотреть тарифы</a>
+      <a class="btn btn-ghost" href="#prices" data-magnetic data-i18n="hero.cta.secondary">Посмотреть тарифы</a>
     </div>
 
-    <ul class="hero-meta reveal" aria-label="Ключевые факты">
-      <li><span>100%</span> предоплата</li>
-      <li><span>USDT · BTC</span> приём оплат</li>
-      <li><span>Booking · Expedia</span> прямое подтверждение</li>
-      <li><span>Возврат</span> если не вышло</li>
+    <ul class="hero-meta reveal" aria-label="Key facts">
+      <li><span data-i18n="hero.meta.1.k">100%</span> <span data-i18n="hero.meta.1.v">предоплата</span></li>
+      <li><span data-i18n="hero.meta.2.k">USDT · BTC</span> <span data-i18n="hero.meta.2.v">приём оплат</span></li>
+      <li><span data-i18n="hero.meta.3.k">Booking · Expedia</span> <span data-i18n="hero.meta.3.v">прямое подтверждение</span></li>
+      <li><span data-i18n="hero.meta.4.k">Возврат</span> <span data-i18n="hero.meta.4.v">если не вышло</span></li>
     </ul>
 
     <div class="hero-orb" aria-hidden="true"></div>
     <div class="hero-orb hero-orb--alt" aria-hidden="true"></div>
   </section>
 
-  <section class="marquee-wrap" aria-label="Города и направления, с которыми работаем">
+  <section class="marquee-wrap" aria-label="Cities we work with">
     <div class="marquee">
       <div class="marquee-track">
         <span>Прага</span><span aria-hidden="true">·</span>
@@ -86,7 +121,6 @@
         <span>Афины</span><span aria-hidden="true">·</span>
         <span>Амстердам</span><span aria-hidden="true">·</span>
         <span>Париж</span><span aria-hidden="true">·</span>
-        <!-- duplicate for seamless loop -->
         <span aria-hidden="true">Прага</span><span aria-hidden="true">·</span>
         <span aria-hidden="true">Белград</span><span aria-hidden="true">·</span>
         <span aria-hidden="true">Варшава</span><span aria-hidden="true">·</span>
@@ -108,69 +142,69 @@
 
   <section id="how" class="how" aria-labelledby="how-h">
     <header class="section-head reveal">
-      <p class="eyebrow">§ 1 · Как мы работаем</p>
-      <h2 id="how-h">Прямое подтверждение через площадки, которым доверяют миллионы.</h2>
+      <p class="eyebrow" data-i18n="how.eyebrow">§ 1 · Как мы работаем</p>
+      <h2 id="how-h" data-i18n="how.h2">Прямое подтверждение через площадки, которым доверяют миллионы.</h2>
     </header>
 
     <div class="tiles" data-spotlight-group>
       <article class="tile reveal">
-        <h3>Прямое подтверждение</h3>
-        <p>Берём бронирование на себя через Booking.com, Expedia и другие платформы. Особенно удобно для срочных вариантов, self check-in и заездов «на завтра».</p>
+        <h3 data-i18n="how.t1.h">Прямое подтверждение</h3>
+        <p data-i18n="how.t1.p">Берём бронирование на себя через Booking.com, Expedia и другие платформы. Особенно удобно для срочных вариантов, self check-in и заездов «на завтра».</p>
       </article>
       <article class="tile reveal">
-        <h3>100% предоплата</h3>
-        <p>Стандартная практика, которая позволяет нам сразу начать работу над вашим запросом. Жёстких дедлайнов нет — как только бронь подтверждена, присылаем все данные.</p>
+        <h3 data-i18n="how.t2.h">100% предоплата</h3>
+        <p data-i18n="how.t2.p">Стандартная практика, которая позволяет нам сразу начать работу над вашим запросом. Жёстких дедлайнов нет — как только бронь подтверждена, присылаем все данные.</p>
       </article>
       <article class="tile reveal">
-        <h3>Не вышло — вернём</h3>
-        <p>Если по какой-то причине оформить не получится, деньги возвращаются в полном объёме в течение короткого времени на тот же реквизит.</p>
+        <h3 data-i18n="how.t3.h">Не вышло — вернём</h3>
+        <p data-i18n="how.t3.p">Если по какой-то причине оформить не получится, деньги возвращаются в полном объёме в течение короткого времени на тот же реквизит.</p>
       </article>
     </div>
   </section>
 
   <section id="prices" class="prices" aria-labelledby="prices-h">
     <header class="section-head reveal">
-      <p class="eyebrow">§ 2 · Стоимость наших услуг</p>
-      <h2 id="prices-h">Считаем честно. Цену согласовываем до оплаты.</h2>
-      <p class="section-sub">Мы всегда заранее сообщаем точную стоимость услуги, чтобы вы могли принять взвешенное решение.</p>
+      <p class="eyebrow" data-i18n="prices.eyebrow">§ 2 · Стоимость наших услуг</p>
+      <h2 id="prices-h" data-i18n="prices.h2">Считаем честно. Цену согласовываем до оплаты.</h2>
+      <p class="section-sub" data-i18n="prices.sub">Мы всегда заранее сообщаем точную стоимость услуги, чтобы вы могли принять взвешенное решение.</p>
     </header>
 
     <div class="bento" data-spotlight-group>
 
       <article class="card card-lg reveal">
         <div class="card-top">
-          <span class="tag">Отели и апартаменты</span>
+          <span class="tag" data-i18n="prices.c1.tag">Отели и апартаменты</span>
           <span class="card-price">60<small>%</small></span>
         </div>
-        <h3>Стандартный тариф от стоимости проживания</h3>
+        <h3 data-i18n="prices.c1.h">Стандартный тариф от стоимости проживания</h3>
         <ul class="bul">
-          <li><strong>65%</strong> — популярные направления: Чехия, Сербия, Польша, Грузия, Турция и др.</li>
-          <li><strong>70%</strong> — при бронировании день в день по этим же направлениям.</li>
-          <li>Минимальная сумма заказа — <strong>12 000 ₽</strong> или эквивалент в долларах по курсу на день оплаты.</li>
+          <li data-i18n-html="prices.c1.li1"><strong>65%</strong> — популярные направления: Чехия, Сербия, Польша, Грузия, Турция и др.</li>
+          <li data-i18n-html="prices.c1.li2"><strong>70%</strong> — при бронировании день в день по этим же направлениям.</li>
+          <li data-i18n-html="prices.c1.li3">Минимальная сумма заказа — <strong>12 000 ₽</strong> или эквивалент в долларах по курсу на день оплаты.</li>
         </ul>
       </article>
 
       <article class="card reveal">
         <div class="card-top">
-          <span class="tag">Авиабилеты</span>
+          <span class="tag" data-i18n="prices.c2.tag">Авиабилеты</span>
           <span class="card-price">50<small>%</small></span>
         </div>
-        <h3>Комиссия от стоимости билета</h3>
+        <h3 data-i18n="prices.c2.h">Комиссия от стоимости билета</h3>
         <ul class="bul">
-          <li>Минимальная сумма — <strong>12 000 ₽</strong>.</li>
-          <li>Оформляем за <strong>1–7 дней</strong> до вылета.</li>
+          <li data-i18n-html="prices.c2.li1">Минимальная сумма — <strong>12 000 ₽</strong>.</li>
+          <li data-i18n-html="prices.c2.li2">Оформляем за <strong>1–7 дней</strong> до вылета.</li>
         </ul>
       </article>
 
       <article class="card reveal">
         <div class="card-top">
-          <span class="tag">Экскурсии и авто</span>
+          <span class="tag" data-i18n="prices.c3.tag">Экскурсии и авто</span>
           <span class="card-price">50<small>/60%</small></span>
         </div>
-        <h3>Экскурсии и аренда автомобиля</h3>
+        <h3 data-i18n="prices.c3.h">Экскурсии и аренда автомобиля</h3>
         <ul class="bul">
-          <li><strong>Экскурсии</strong> — 50% от стоимости.</li>
-          <li><strong>Аренда автомобиля</strong> — 60% от стоимости.</li>
+          <li data-i18n-html="prices.c3.li1"><strong>Экскурсии</strong> — 50% от стоимости.</li>
+          <li data-i18n-html="prices.c3.li2"><strong>Аренда автомобиля</strong> — 60% от стоимости.</li>
         </ul>
       </article>
 
@@ -179,25 +213,25 @@
 
   <section id="scope" class="scope" aria-labelledby="scope-h">
     <header class="section-head reveal">
-      <p class="eyebrow">§ 3 · География и ограничения</p>
-      <h2 id="scope-h">Что мы можем — и где честно говорим «нет».</h2>
+      <p class="eyebrow" data-i18n="scope.eyebrow">§ 3 · География и ограничения</p>
+      <h2 id="scope-h" data-i18n="scope.h2">Что мы можем — и где честно говорим «нет».</h2>
     </header>
 
     <div class="scope-grid">
       <article class="scope-col scope-yes reveal">
-        <h3>Берём с удовольствием</h3>
+        <h3 data-i18n="scope.yes.h">Берём с удовольствием</h3>
         <ul>
-          <li>Большинство стран мира.</li>
-          <li>Европейские города — наша сильная сторона.</li>
-          <li>Self check-in апартаменты.</li>
-          <li>Срочные заезды и день в день — при оперативном диалоге.</li>
+          <li data-i18n="scope.yes.li1">Большинство стран мира.</li>
+          <li data-i18n="scope.yes.li2">Европейские города — наша сильная сторона.</li>
+          <li data-i18n="scope.yes.li3">Self check-in апартаменты.</li>
+          <li data-i18n="scope.yes.li4">Срочные заезды и день в день — при оперативном диалоге.</li>
         </ul>
       </article>
       <article class="scope-col scope-no reveal">
-        <h3>Не оформляем</h3>
+        <h3 data-i18n="scope.no.h">Не оформляем</h3>
         <ul>
-          <li>Отели в ряде курортных направлений: <strong>Египет, Мальдивы, Индия, Вьетнам, Дубай</strong> и некоторые другие. Полный список — у нас, всегда подскажем альтернативу.</li>
-          <li>Авиабилеты на рейсы, связанные с <strong>РФ и странами СНГ</strong>.</li>
+          <li data-i18n-html="scope.no.li1">Отели в ряде курортных направлений: <strong>Египет, Мальдивы, Индия, Вьетнам, Дубай</strong> и некоторые другие. Полный список — у нас, всегда подскажем альтернативу.</li>
+          <li data-i18n-html="scope.no.li2">Авиабилеты на рейсы, связанные с <strong>РФ и странами СНГ</strong>.</li>
         </ul>
       </article>
     </div>
@@ -205,42 +239,42 @@
 
   <section id="order" class="order" aria-labelledby="order-h">
     <header class="section-head reveal">
-      <p class="eyebrow">§ 4 · Как оформить заказ</p>
-      <h2 id="order-h">Четыре шага. Без анкет и звонков.</h2>
+      <p class="eyebrow" data-i18n="order.eyebrow">§ 4 · Как оформить заказ</p>
+      <h2 id="order-h" data-i18n="order.h2">Четыре шага. Без анкет и звонков.</h2>
     </header>
 
     <ol class="timeline" data-spotlight-group>
       <li class="step reveal">
         <span class="step-num">01</span>
-        <h3>Пришлите ссылку</h3>
-        <p>На отель или рейс с желаемыми датами и пожеланиями.</p>
+        <h3 data-i18n="order.s1.h">Пришлите ссылку</h3>
+        <p data-i18n="order.s1.p">На отель или рейс с желаемыми датами и пожеланиями.</p>
       </li>
       <li class="step reveal">
         <span class="step-num">02</span>
-        <h3>Проверим и предложим</h3>
-        <p>Сообщим доступность и что можем предложить, включая запасные варианты.</p>
+        <h3 data-i18n="order.s2.h">Проверим и предложим</h3>
+        <p data-i18n="order.s2.p">Сообщим доступность и что можем предложить, включая запасные варианты.</p>
       </li>
       <li class="step reveal">
         <span class="step-num">03</span>
-        <h3>Подтверждение и оплата</h3>
-        <p>После вашего согласия и оплаты берём заказ в работу.</p>
+        <h3 data-i18n="order.s3.h">Подтверждение и оплата</h3>
+        <p data-i18n="order.s3.p">После вашего согласия и оплаты берём заказ в работу.</p>
       </li>
       <li class="step reveal">
         <span class="step-num">04</span>
-        <h3>Получаете бронь</h3>
-        <p>Подтверждение с номером и всеми инструкциями для заселения.</p>
+        <h3 data-i18n="order.s4.h">Получаете бронь</h3>
+        <p data-i18n="order.s4.p">Подтверждение с номером и всеми инструкциями для заселения.</p>
       </li>
     </ol>
 
-    <p class="aside reveal">
+    <p class="aside reveal" data-i18n="order.aside">
       При заселении остаёмся на связи и помогаем с возможными вопросами — депозит, late check-in и тому подобное.
     </p>
   </section>
 
   <section id="pay" class="pay" aria-labelledby="pay-h">
     <header class="section-head reveal">
-      <p class="eyebrow">§ 5 · Оплата и возврат</p>
-      <h2 id="pay-h">Принимаем удобные для вас способы.</h2>
+      <p class="eyebrow" data-i18n="pay.eyebrow">§ 5 · Оплата и возврат</p>
+      <h2 id="pay-h" data-i18n="pay.h2">Принимаем удобные для вас способы.</h2>
     </header>
 
     <div class="pay-grid" data-spotlight-group>
@@ -249,88 +283,88 @@
           <svg viewBox="0 0 32 32" width="32" height="32"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9 11h14M16 11v12M11 14h10" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
         </div>
         <h3>USDT</h3>
-        <p>Сети <strong>TRC-20</strong> и <strong>ERC-20</strong>.</p>
+        <p data-i18n-html="pay.usdt.p">Сети <strong>TRC-20</strong> и <strong>ERC-20</strong>.</p>
       </article>
       <article class="pay-card reveal">
         <div class="pay-icon" aria-hidden="true">
           <svg viewBox="0 0 32 32" width="32" height="32"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 9v14M15 9v14M10 12h9a3 3 0 0 1 0 6H10M10 18h10a3 3 0 0 1 0 6H10" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
         <h3>Bitcoin</h3>
-        <p>Оплата напрямую на наш кошелёк.</p>
+        <p data-i18n="pay.btc.p">Оплата напрямую на наш кошелёк.</p>
       </article>
       <article class="pay-card pay-refund reveal">
-        <h3>Возврат</h3>
-        <p>Если бронь по объективным причинам не состоится, возврат производится <strong>быстро и в полном объёме</strong> на тот же реквизит, с которого пришла оплата.</p>
+        <h3 data-i18n="pay.refund.h">Возврат</h3>
+        <p data-i18n-html="pay.refund.p">Если бронь по объективным причинам не состоится, возврат производится <strong>быстро и в полном объёме</strong> на тот же реквизит, с которого пришла оплата.</p>
       </article>
     </div>
   </section>
 
   <section id="faq" class="faq" aria-labelledby="faq-h">
     <header class="section-head reveal">
-      <p class="eyebrow">Частые вопросы</p>
-      <h2 id="faq-h">Коротко о главном.</h2>
+      <p class="eyebrow" data-i18n="faq.eyebrow">Частые вопросы</p>
+      <h2 id="faq-h" data-i18n="faq.h2">Коротко о главном.</h2>
     </header>
 
     <div class="faq-list">
       <details class="faq-item reveal">
         <summary>
-          <span>Почему 100% предоплата?</span>
+          <span data-i18n="faq.q1">Почему 100% предоплата?</span>
           <span class="faq-icon" aria-hidden="true">+</span>
         </summary>
-        <p>Это стандартная практика, которая позволяет нам сразу начать работу над вашим запросом. Жёстких дедлайнов нет — как только бронь будет подтверждена, мы пришлём вам все данные. Если по какой-то причине оформить не получится, деньги возвращаются в полном объёме на тот же реквизит.</p>
+        <p data-i18n="faq.a1">Это стандартная практика, которая позволяет нам сразу начать работу над вашим запросом. Жёстких дедлайнов нет — как только бронь будет подтверждена, мы пришлём вам все данные. Если по какой-то причине оформить не получится, деньги возвращаются в полном объёме на тот же реквизит.</p>
       </details>
 
       <details class="faq-item reveal">
         <summary>
-          <span>В какие страны вы не оформляете?</span>
+          <span data-i18n="faq.q2">В какие страны вы не оформляете?</span>
           <span class="faq-icon" aria-hidden="true">+</span>
         </summary>
-        <p>Мы не работаем с отелями в ряде популярных курортных направлений: Египет, Мальдивы, Индия, Вьетнам, Дубай и некоторые другие. Полный список уточняйте у нас — мы всегда подскажем альтернативы.</p>
+        <p data-i18n="faq.a2">Мы не работаем с отелями в ряде популярных курортных направлений: Египет, Мальдивы, Индия, Вьетнам, Дубай и некоторые другие. Полный список уточняйте у нас — мы всегда подскажем альтернативы.</p>
       </details>
 
       <details class="faq-item reveal">
         <summary>
-          <span>Какие авиабилеты вы оформляете?</span>
+          <span data-i18n="faq.q3">Какие авиабилеты вы оформляете?</span>
           <span class="faq-icon" aria-hidden="true">+</span>
         </summary>
-        <p>Только рейсы, не связанные с РФ и странами СНГ. Комиссия 50%, минимальная сумма — 12 000 ₽, оформляем за 1–7 дней до вылета.</p>
+        <p data-i18n="faq.a3">Только рейсы, не связанные с РФ и странами СНГ. Комиссия 50%, минимальная сумма — 12 000 ₽, оформляем за 1–7 дней до вылета.</p>
       </details>
 
       <details class="faq-item reveal">
         <summary>
-          <span>Можно ли забронировать «день в день»?</span>
+          <span data-i18n="faq.q4">Можно ли забронировать «день в день»?</span>
           <span class="faq-icon" aria-hidden="true">+</span>
         </summary>
-        <p>Да, но это требует оперативности — лучше планировать хотя бы за несколько часов. По популярным направлениям при бронировании день в день действует тариф 70%.</p>
+        <p data-i18n="faq.a4">Да, но это требует оперативности — лучше планировать хотя бы за несколько часов. По популярным направлениям при бронировании день в день действует тариф 70%.</p>
       </details>
 
       <details class="faq-item reveal">
         <summary>
-          <span>Как происходит возврат?</span>
+          <span data-i18n="faq.q5">Как происходит возврат?</span>
           <span class="faq-icon" aria-hidden="true">+</span>
         </summary>
-        <p>Если бронь по объективным причинам не состоится, возврат производится быстро и в полном объёме на тот же реквизит, с которого пришла оплата.</p>
+        <p data-i18n="faq.a5">Если бронь по объективным причинам не состоится, возврат производится быстро и в полном объёме на тот же реквизит, с которого пришла оплата.</p>
       </details>
 
       <details class="faq-item reveal">
         <summary>
-          <span>Помогаете ли при заселении?</span>
+          <span data-i18n="faq.q6">Помогаете ли при заселении?</span>
           <span class="faq-icon" aria-hidden="true">+</span>
         </summary>
-        <p>Да. При заселении в отель мы остаёмся на связи и помогаем с возможными вопросами — депозит, late check-in и так далее.</p>
+        <p data-i18n="faq.a6">Да. При заселении в отель мы остаёмся на связи и помогаем с возможными вопросами — депозит, late check-in и так далее.</p>
       </details>
     </div>
   </section>
 
   <section id="contact" class="contact" aria-labelledby="contact-h">
     <div class="contact-inner reveal">
-      <p class="eyebrow">Готовы помочь</p>
-      <h2 id="contact-h">Пришлите ссылку — посчитаем и подтвердим.</h2>
-      <p class="lede">Отвечаем быстро. Чем раньше пришлёте ссылку и даты, тем больше шансов забрать вариант, особенно на день в день.</p>
+      <p class="eyebrow" data-i18n="contact.eyebrow">Готовы помочь</p>
+      <h2 id="contact-h" data-i18n="contact.h2">Пришлите ссылку — посчитаем и подтвердим.</h2>
+      <p class="lede" data-i18n="contact.lede">Отвечаем быстро. Чем раньше пришлёте ссылку и даты, тем больше шансов забрать вариант, особенно на день в день.</p>
       <div class="contact-cta">
         <!-- TODO: замените на свой Telegram / WhatsApp / email -->
-        <a class="btn btn-primary" href="https://t.me/secrettravel">Написать в Telegram</a>
-        <a class="btn btn-ghost" href="mailto:hello@secrettravel.example">hello@secrettravel.example</a>
+        <a class="btn btn-primary" href="https://t.me/secrettravel" data-magnetic data-i18n="contact.cta.tg">Написать в Telegram</a>
+        <a class="btn btn-ghost" href="mailto:hello@secrettravel.example" data-magnetic>hello@secrettravel.example</a>
       </div>
     </div>
   </section>
@@ -340,12 +374,49 @@
 <footer class="foot">
   <div class="foot-row">
     <span>© <span id="year">2026</span> SecretTravel</span>
-    <span>Бронирование · Авиа · Экскурсии · Аренда авто</span>
+    <span data-i18n="foot.right">Бронирование · Авиа · Экскурсии · Аренда авто</span>
   </div>
-  <p class="foot-note">
+  <p class="foot-note" data-i18n="foot.note">
     Материал на сайте описывает условия сотрудничества и не является публичной офертой. Точную стоимость услуги мы согласовываем до оплаты.
   </p>
 </footer>
+
+<!-- =================== Chat Widget =================== -->
+<div class="chat" id="chat" aria-live="polite">
+  <button class="chat-fab" type="button" data-chat-open aria-label="Open chat" aria-expanded="false" aria-controls="chat-panel">
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+      <path d="M4 5h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-9l-5 4v-4H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z" fill="currentColor"/>
+    </svg>
+    <span class="chat-fab-label" data-i18n="chat.fab">Менеджер</span>
+    <span class="chat-fab-dot" aria-hidden="true"></span>
+  </button>
+
+  <aside class="chat-panel" id="chat-panel" role="dialog" aria-modal="false" aria-labelledby="chat-title" hidden>
+    <header class="chat-head">
+      <div class="chat-avatar" aria-hidden="true">
+        <span>S</span>
+      </div>
+      <div class="chat-head-text">
+        <strong id="chat-title" data-i18n="chat.title">Менеджер SecretTravel</strong>
+        <span class="chat-sub"><span class="chat-pulse" aria-hidden="true"></span><span data-i18n="chat.subtitle">Обычно отвечаем за 1–2 минуты</span></span>
+      </div>
+      <button class="chat-close" type="button" data-chat-close aria-label="Close chat">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </header>
+
+    <div class="chat-log" id="chat-log" role="log" aria-live="polite"></div>
+
+    <div class="chat-chips" id="chat-chips"></div>
+
+    <form class="chat-form" id="chat-form" autocomplete="off">
+      <input type="text" class="chat-input" id="chat-input" data-i18n-attr="placeholder:chat.placeholder" placeholder="Опишите запрос: ссылка, даты, пожелания…" aria-label="Message" />
+      <button type="submit" class="chat-send" data-i18n-attr="aria-label:chat.send" aria-label="Send">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M3 12l18-9-7 18-2-7-9-2z" fill="currentColor"/></svg>
+      </button>
+    </form>
+  </aside>
+</div>
 
 <script src="script.js" defer></script>
 </body>
