@@ -873,6 +873,9 @@
       submitBtn && (submitBtn.disabled = true);
       setStatus('booking.status.sending');
 
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
+
       try {
         const res = await fetch(SUPABASE_URL + '/rest/v1/bookings', {
           method: 'POST',
@@ -883,6 +886,7 @@
             'Prefer': 'return=minimal',
           },
           body: JSON.stringify(payload),
+          signal: controller.signal,
         });
         if (!res.ok) {
           const errText = await res.text().catch(() => '');
@@ -893,9 +897,10 @@
         setStatus('booking.status.ok', 'ok');
         bookingForm.reset();
       } catch (err) {
-        console.warn('Booking submit error:', err);
+        console.warn('Booking submit error:', err && err.name === 'AbortError' ? 'timeout' : err);
         setStatus('booking.status.err', 'err');
       } finally {
+        clearTimeout(timeoutId);
         submitBtn && (submitBtn.disabled = false);
       }
     });

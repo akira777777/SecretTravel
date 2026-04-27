@@ -445,7 +445,7 @@
 
         <label class="bf-field">
           <span class="bf-label" data-i18n="booking.f.email">Email <em>*</em></span>
-          <input type="email" name="contact_email" required maxlength="200" autocomplete="email" />
+          <input type="email" name="contact_email" required maxlength="200" autocomplete="email" aria-describedby="bf-disclaimer" />
         </label>
 
         <label class="bf-field bf-span-2">
@@ -470,7 +470,7 @@
           <span class="btn-label" data-i18n="booking.submit">Отправить запрос</span>
           <span class="btn-arrow" aria-hidden="true">→</span>
         </button>
-        <p class="bf-disclaimer" data-i18n="booking.disclaimer">
+        <p class="bf-disclaimer" id="bf-disclaimer" data-i18n="booking.disclaimer">
           Никакого спама. После отправки мы свяжемся в течение 1–2 минут в рабочее время.
         </p>
       </div>
