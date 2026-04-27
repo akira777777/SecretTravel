@@ -1,0 +1,45 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Env / secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Build / cache
+node_modules/
+dist/
+build/
+.cache/
+.parcel-cache/
+.tmp/
+
+# Bot runtime artefacts
+bot/node_modules/
+bot/.env
+bot/dist/
+bot/*.db
+bot/*.sqlite
+
+# Local Claude session data — keep settings, drop generated
+.claude/projects/
+.claude/sessions/
+.claude/cache/
+.claude/logs/

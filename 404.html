@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="robots" content="noindex,follow" />
+  <meta name="theme-color" content="#f4ede0" />
+  <title>404 — страница не найдена · SecretTravel</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%224%22%20fill%3D%22%23f4ede0%22/%3E%3Ctext%20x%3D%2216%22%20y%3D%2222%22%20text-anchor%3D%22middle%22%20font-family%3D%22Georgia%2C%20serif%22%20font-style%3D%22italic%22%20font-weight%3D%22500%22%20font-size%3D%2220%22%20fill%3D%22%23612424%22%3ES%3C/text%3E%3C/svg%3E" />
+  <style>
+    :root {
+      --paper: oklch(95% 0.018 78);
+      --ink:   oklch(20% 0.025 270);
+      --ink-2: oklch(35% 0.022 270);
+      --ink-3: oklch(52% 0.018 270);
+      --ox:    oklch(40% 0.16 25);
+      --rule:  oklch(20% 0.025 270 / 0.14);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Manrope', -apple-system, system-ui, 'Helvetica Neue', sans-serif;
+      display: grid;
+      place-items: center;
+      padding: 2rem;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrap { max-width: 640px; text-align: left; }
+    .eyebrow {
+      font-family: ui-monospace, 'JetBrains Mono', SFMono-Regular, Menlo, monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      font-size: 0.72rem;
+      color: var(--ox);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .eyebrow::before {
+      content: '';
+      width: 24px; height: 1px;
+      background: var(--ox);
+      display: inline-block;
+    }
+    h1 {
+      font-family: 'Fraunces', 'Cormorant Garamond', Georgia, serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(3rem, 1rem + 9vw, 7.5rem);
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin: 1.25rem 0 1rem;
+      color: var(--ink);
+    }
+    h1 em { color: var(--ox); font-style: italic; }
+    p {
+      color: var(--ink-2);
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(1.05rem, 0.9rem + 0.5vw, 1.3rem);
+      max-width: 44ch;
+      margin: 0 0 1.75rem;
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: 0.65rem; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.85rem 1.5rem;
+      font-family: ui-monospace, 'JetBrains Mono', SFMono-Regular, Menlo, monospace;
+      font-size: 0.78rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      border-radius: 2px;
+      border: 1px solid var(--ink);
+      text-decoration: none;
+      transition: background 200ms, color 200ms, transform 350ms;
+    }
+    .btn-primary { background: var(--ink); color: var(--paper); }
+    .btn-primary:hover { background: var(--ox); border-color: var(--ox); transform: translateY(-1px); }
+    .btn-ghost { background: transparent; color: var(--ink); }
+    .btn-ghost:hover { background: var(--ink); color: var(--paper); }
+    footer {
+      margin-top: 3rem;
+      font-family: ui-monospace, monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <p class="eyebrow" id="eyebrow">Ошибка · 404</p>
+    <h1 id="title">Эта <em>страница</em> не найдена.</h1>
+    <p id="lede">Возможно, ссылка устарела или мы её переименовали. Вернёмся на главную и подберём бронирование.</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="/" id="cta-home">На главную</a>
+      <a class="btn btn-ghost" href="/#contact" id="cta-contact">Написать менеджеру</a>
+    </div>
+    <footer id="foot">SecretTravel · Concierge Booking</footer>
+  </main>
+  <script>
+    (function () {
+      var lang = 'ru';
+      try {
+        var saved = localStorage.getItem('st-lang');
+        if (saved === 'ru' || saved === 'en') lang = saved;
+        else if ((navigator.language || '').toLowerCase().indexOf('ru') !== 0) lang = 'en';
+      } catch (e) {}
+      if (lang !== 'en') return;
+      document.documentElement.lang = 'en';
+      document.title = '404 — page not found · SecretTravel';
+      document.getElementById('eyebrow').textContent = 'Error · 404';
+      document.getElementById('title').innerHTML = 'This <em>page</em> could not be found.';
+      document.getElementById('lede').textContent = 'The link may be outdated or we renamed it. Head back home and we will sort the booking.';
+      document.getElementById('cta-home').textContent = 'Back home';
+      document.getElementById('cta-contact').textContent = 'Message a manager';
+      document.getElementById('foot').textContent = 'SecretTravel · Concierge Booking';
+    })();
+  </script>
+</body>
+</html>
