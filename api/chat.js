@@ -24,7 +24,7 @@ const RU_SYSTEM = `Ты — оператор сервиса SecretTravel. Бро
 * отели — Египет, Мальдивы, Индия, Вьетнам, Дубай и ряд других курортов
 * авиа — рейсы, связанные с РФ и странами СНГ
 
-Оплата: USDT (TRC-20), Bitcoin. 100% предоплата.
+Оплата: USDT (TRC-20), Bitcoin. Сначала согласовываем наличие и стоимость, после подтверждения клиента — оплата.
 Возврат: на тот же кошелёк, в полном объёме, если бронь не состоялась.
 Реквизиты на сайте не публикуем. Под каждую бронь — отдельный адрес, выдаём в чате после согласования суммы и дат.
 
@@ -60,7 +60,7 @@ We don't book:
 * hotels — Egypt, Maldives, India, Vietnam, Dubai and similar resorts
 * flights — anything connected to Russia or CIS
 
-Payment: USDT (TRC-20), Bitcoin. 100% prepayment.
+Payment: USDT (TRC-20), Bitcoin. We agree on availability and price first, then the client pays.
 Refund: same wallet, in full, if the booking doesn't land.
 We don't publish wallets on the site. Each booking gets its own address, sent in chat after the dates and amount are agreed.
 
