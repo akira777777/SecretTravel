@@ -34,10 +34,86 @@ Key facts:
 
 When a user asks about a specific booking, redirect them to Telegram with the link and dates.`;
 
+// Browser origins allowed to call this endpoint. Anything else gets 403.
+// Covers production, Vercel preview deployments, and localhost dev.
+const ALLOWED_ORIGINS = [
+  /^https:\/\/secrettravel\.vercel\.app$/,
+  /^https:\/\/secrettravel-[a-z0-9-]+\.vercel\.app$/,
+  /^http:\/\/localhost(:\d+)?$/,
+  /^http:\/\/127\.0\.0\.1(:\d+)?$/,
+];
+
+const isAllowedOrigin = (origin) => {
+  if (!origin) return false;
+  return ALLOWED_ORIGINS.some((re) => re.test(origin));
+};
+
+// Per-instance rate limit. Vercel Fluid Compute reuses the function instance
+// across concurrent invocations, so this catches burst abuse from the same IP
+// hitting a warm instance. Not a global limit — for that you'd need an
+// external store (e.g. Upstash Redis). Treat as a cheap first line of defence.
+const RATE_WINDOW_MS = 60_000;
+const RATE_PER_IP = 12;
+const RATE_GLOBAL = 200;
+const ipHits = new Map();
+let globalHits = { count: 0, resetAt: 0 };
+
+const getClientIp = (req) => {
+  const fwd = req.headers['x-forwarded-for'];
+  if (typeof fwd === 'string' && fwd.length) return fwd.split(',')[0].trim();
+  return req.socket?.remoteAddress || 'unknown';
+};
+
+const checkRateLimit = (ip) => {
+  const now = Date.now();
+
+  if (now > globalHits.resetAt) {
+    globalHits = { count: 0, resetAt: now + RATE_WINDOW_MS };
+  }
+  globalHits.count += 1;
+  if (globalHits.count > RATE_GLOBAL) {
+    return { ok: false, retryMs: globalHits.resetAt - now };
+  }
+
+  const bucket = ipHits.get(ip);
+  if (!bucket || now > bucket.resetAt) {
+    ipHits.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    return { ok: true };
+  }
+  bucket.count += 1;
+  if (bucket.count > RATE_PER_IP) {
+    return { ok: false, retryMs: bucket.resetAt - now };
+  }
+  return { ok: true };
+};
+
+const sweepIpHits = () => {
+  const now = Date.now();
+  for (const [ip, bucket] of ipHits) {
+    if (now > bucket.resetAt) ipHits.delete(ip);
+  }
+};
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).end('Method Not Allowed');
   }
+
+  const rawOrigin = req.headers.origin || req.headers.referer || '';
+  const originForCheck = rawOrigin.startsWith('http')
+    ? new URL(rawOrigin).origin
+    : rawOrigin;
+  if (!isAllowedOrigin(originForCheck)) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  const ip = getClientIp(req);
+  const rate = checkRateLimit(ip);
+  if (!rate.ok) {
+    res.setHeader('Retry-After', Math.ceil((rate.retryMs || RATE_WINDOW_MS) / 1000));
+    return res.status(429).json({ error: 'Too many requests' });
+  }
+  if (ipHits.size > 2_000) sweepIpHits();
 
   if (!req.body) {
     await new Promise((resolve, reject) => {

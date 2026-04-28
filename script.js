@@ -620,6 +620,14 @@
     try { localStorage.setItem(k, v); } catch { /* private mode / quota — ignore */ }
   };
   const detectLang = () => {
+    // ?lang= URL param wins (lets hreflang alternates and shared links pin a language)
+    try {
+      const fromUrl = new URLSearchParams(location.search).get('lang');
+      if (fromUrl === 'ru' || fromUrl === 'en') {
+        safeStorageSet(STORAGE_KEY, fromUrl);
+        return fromUrl;
+      }
+    } catch { /* file:// or sandboxed — ignore */ }
     const saved = safeStorageGet(STORAGE_KEY);
     if (saved === 'ru' || saved === 'en') return saved;
     const navLang = (navigator.language || 'ru').toLowerCase();
@@ -652,6 +660,30 @@
     document.querySelectorAll('.lang-toggle .lang-opt').forEach((opt) => {
       opt.classList.toggle('is-active', opt.getAttribute('data-lang') === currentLang);
     });
+
+    // Keep FAQ structured data aligned with the visible language. The default
+    // RU markup stays in HTML (so first-paint crawlers see it), and we rewrite
+    // it here when the user switches language.
+    const faqLd = document.getElementById('faq-jsonld');
+    if (faqLd) {
+      const mainEntity = [];
+      for (let i = 1; i <= 6; i += 1) {
+        const q = t('faq.q' + i);
+        const a = t('faq.a' + i);
+        if (q && a && q !== 'faq.q' + i) {
+          mainEntity.push({
+            '@type': 'Question',
+            name: q,
+            acceptedAnswer: { '@type': 'Answer', text: a },
+          });
+        }
+      }
+      faqLd.textContent = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity,
+      });
+    }
   };
 
   applyI18n();
