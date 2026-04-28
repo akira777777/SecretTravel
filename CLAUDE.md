@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Static landing page for **SecretTravel**, a concierge booking service (hotels, apartments, flights, tours, car rentals) with crypto payment (USDT TRC-20/ERC-20, BTC). The site is a single Russian/English bilingual page derived verbatim from `C:\Users\fear7\Desktop\Текстовый документ (2).txt` — that file is the source-of-truth for pricing percentages (50/60/65/70%), the ₽12,000 minimum, the excluded countries list (Egypt, Maldives, India, Vietnam, Dubai), and the Russia/CIS flight restriction. **Do not invent terms, percentages, or guarantees that are not in that document.**
+Static landing page for **SecretTravel**, a concierge booking service (hotels, apartments, flights, tours, car rentals) with crypto payment (USDT TRC-20, BTC — ERC-20 not currently accepted). The site is a single Russian/English bilingual page derived verbatim from `C:\Users\fear7\Desktop\Текстовый документ (2).txt` — that file is the source-of-truth for pricing percentages (50/60/65/70%), the ₽12,000 minimum, the excluded countries list (Egypt, Maldives, India, Vietnam, Dubai), and the Russia/CIS flight restriction. **Do not invent terms, percentages, or guarantees that are not in that document.**
 
 **Currency convention:** Pricing is denominated in **USD** ("в нашу сторону" = our fee, not rack rate). Minimum service fee is **$270** (our take, RUB equivalent computed at the day's rate). Per-booking ceiling is **$7,000** (above is case-by-case). The booking form sets `preferred_currency` to `RUB` for `currentLang === 'ru'` and `USD` for `'en'`. If the minimum or ceiling changes, update **both** languages (`prices.c1.li3`, `prices.c2.li1`, `chat.r.prices`, `chat.r.limit`, `faq.a3`) **and** the system prompts in `api/chat.js` (RU + EN) simultaneously.
 
@@ -158,7 +158,7 @@ If you add a new field: (1) add `<input>` with `name=` matching the column, (2) 
   2. `sitemap.xml` — `<loc>` and all `<xhtml:link href>`.
   3. `robots.txt` — `Sitemap:` directive.
   (`404.html` uses relative URLs — no domain reference there.)
-- Crypto wallet addresses currently in `index.html` are **placeholders** (`TYourUSDTtrc20AddressHereXyz`, `1YourBitcoinAddressHereAbc`). The `[data-copy]` click handler is wired but copies the placeholder text. Replace before public launch; remember USDT may need different addresses per network (TRC-20 vs ERC-20).
+- Crypto wallet addresses are live in `index.html` `#pay` section: USDT TRC-20 (`TVz2…`) and BTC (`3FBX…`). The `[data-copy]` click handler copies them on click. Only TRC-20 is accepted for USDT — do not re-introduce ERC-20 copy without a corresponding ERC-20 address (the networks are not interchangeable; sending USDT-ERC-20 to a TRC-20 address is unrecoverable).
 - Supabase project (`jvdshxutzgxhxopcgifj`) and `bookings` table are **already provisioned** with RLS — the booking form is live and persists submissions. Use Supabase Dashboard → Table Editor → `bookings` to view incoming requests, or query via Supabase MCP.
 
 ## Things to avoid
