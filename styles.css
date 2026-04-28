@@ -2005,6 +2005,10 @@ html.js .hero-title.is-in .word { opacity: 1; transform: none; }
 
 .hero-main { max-width: 100%; }
 .hero-main .hero-title { max-width: 11ch; }
+html[lang="ru"] .hero-main .hero-title {
+  max-width: 14ch;
+  letter-spacing: -0.038em;
+}
 
 .hero-aside {
   padding-left: clamp(1.25rem, 2vw, 2rem);
