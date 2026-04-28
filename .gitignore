@@ -45,8 +45,10 @@ bot/*.sqlite
 .claude/logs/
 .claude/settings.local.json
 
-# Local audit artefacts (chrome-devtools-mcp screenshots, etc.)
+# Local audit artefacts (chrome-devtools-mcp screenshots, throwaway parity scripts)
 .audit-*.jpeg
 .audit-*.png
+.audit-*.cjs
+.audit-*.js
 
 .vercel

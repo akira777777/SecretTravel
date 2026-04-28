@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Static landing page for **SecretTravel**, a concierge booking service (hotels, apartments, flights, tours, car rentals) with crypto payment (USDT TRC-20, BTC — ERC-20 not currently accepted). The site is a single Russian/English bilingual page derived verbatim from `C:\Users\fear7\Desktop\Текстовый документ (2).txt` — that file is the source-of-truth for pricing percentages (50/60/65/70%), the ₽12,000 minimum, the excluded countries list (Egypt, Maldives, India, Vietnam, Dubai), and the Russia/CIS flight restriction. **Do not invent terms, percentages, or guarantees that are not in that document.**
+Static landing page for **SecretTravel**, a concierge booking service (hotels, apartments, flights, tours, car rentals) with crypto payment (USDT TRC-20, BTC — ERC-20 not currently accepted). The site is a single Russian/English bilingual page originally derived from `C:\Users\fear7\Desktop\Текстовый документ (2).txt` — that file remains the source-of-truth for pricing percentages (50/60/65/70%), the excluded countries list (Egypt, Maldives, India, Vietnam, Dubai), and the Russia/CIS flight restriction. **Currency and minimums in that file are stale** (it predates the USD reset); the live numbers live in this CLAUDE.md (Currency convention) and in `api/chat.js` system prompts. **Do not invent terms, percentages, or guarantees that are not in either of those.**
 
 **Currency convention:** Pricing is denominated in **USD** ("в нашу сторону" = our fee, not rack rate). Minimum service fee is **$270** (our take, RUB equivalent computed at the day's rate). Per-booking ceiling is **$7,000** (above is case-by-case). The booking form sets `preferred_currency` to `RUB` for `currentLang === 'ru'` and `USD` for `'en'`. If the minimum or ceiling changes, update **both** languages (`prices.c1.li3`, `prices.c2.li1`, `chat.r.prices`, `chat.r.limit`, `faq.a3`) **and** the system prompts in `api/chat.js` (RU + EN) simultaneously.
 
@@ -24,6 +24,17 @@ python -m http.server 8080    # then visit http://localhost:8080
 
 The `/api/chat` serverless function cannot run from `file://` or `python -m http.server` — for end-to-end chat testing use `vercel dev` (or push a preview deploy). Reload the page after any edit. There is no test suite, no linter wired up, no CI.
 
+**Visual audits** with `chrome-devtools-mcp` need two overrides to capture full-page screenshots cleanly. By default `.reveal` is opacity:0 until `IntersectionObserver` adds `.is-in`, and `content-visibility: auto` skips off-screen sections — both leave the stitched screenshot black below the fold. Inject this stylesheet via `evaluate_script` before calling `take_screenshot --fullPage`:
+
+```css
+html.js .reveal, html.js .reveal.is-in, html.js .hero-title .word {
+  transition: none !important; opacity: 1 !important; transform: none !important;
+}
+section, main, footer, aside { content-visibility: visible !important; }
+```
+
+Screenshots land as `.audit-*.jpeg` / `.audit-*.png` in the repo root and are gitignored.
+
 ## Architecture
 
 Four coupled front-end files plus a Supabase schema and one Vercel serverless function (`api/chat.js`). The coupling between front-end files is by convention only — there is no module system.
@@ -36,7 +47,9 @@ Markup is mostly static. Every translatable text node carries one of:
 - `data-i18n-html="key"` — replaces `innerHTML` (used when the translation contains tags like `<strong>` / `<em>` / `<a>`).
 - `data-i18n-attr="attr1:key1; attr2:key2"` — sets named attributes (e.g. `placeholder:chat.placeholder`, `content:meta.description` on `<meta>` tags, `aria-label:chat.send`).
 
-The default contents in HTML are the Russian originals — they exist as a fallback before JS runs and as the editable source when adding new sections. The `<head>` carries OG tags, Twitter card, hreflang alternates, JSON-LD `TravelAgency` and `FAQPage` schema (the FAQ block has `id="faq-jsonld"` because `applyI18n()` rebuilds it on language change), and a data-URI SVG OG image — all wired to i18n where applicable. An `Organization` JSON-LD block is **scheduled but not yet shipped** per `docs/superpowers/specs/2026-04-28-broadsheet-hero-redesign-design.md`.
+The default contents in HTML are the Russian originals — they exist as a fallback before JS runs and as the editable source when adding new sections. The `<head>` carries OG tags, Twitter card, hreflang alternates, three JSON-LD blocks (`TravelAgency`, `Organization`, `FAQPage` — the FAQ block has `id="faq-jsonld"` because `applyI18n()` rebuilds it on language change), and an `og:image` pointing at the static `og.svg` (1200×630 stamp, see Production scaffolding) — all wired to i18n where applicable.
+
+The inline `<head>` script does two things before the stylesheet finishes loading: adds `js` to `<html class>` (so the `.reveal` CSS cascade can switch from default-visible to JS-gated opacity), and resolves the language from `?lang=` → `localStorage` → `navigator.language` so the page renders with the right `<html lang>` from the first paint.
 
 Spotlight effects are opt-in via `data-spotlight-group` on a wrapper, and `data-magnetic` on a button. These are read by `script.js`.
 
@@ -66,10 +79,12 @@ All site behavior lives inside one `(() => { ... })();`. When adding features, s
 4. rAF-throttled pointer effects: spotlight groups and magnetic buttons — both gated on `pointer: fine` && `prefers-reduced-motion: no-preference`.
 5. **Hero mouse parallax** — `pointermove` on `.hero`, moves `.hero-title` at −7px depth, `.hero .lede` at −3px, and each `.hero-orb` at +20/+30px (opposite = foreground). Uses `style.transform`; compatible with CSS `translate` animation on orbs because they are separate CSS properties.
 6. Active-nav-link via a second `IntersectionObserver` on `main section[id]`.
-7. **FAQ smooth accordion** — intercepts `<summary>` clicks, animates `<p>` height/opacity using explicit `offsetHeight` reflow commits before setting transitions. Gated on `!prefersReduced`.
+7. **FAQ smooth accordion** — intercepts `<summary>` clicks, animates `<p>` height/opacity using explicit `offsetHeight` reflow commits before setting transitions. Gated on `!prefersReduced`. Also swaps the `.faq-icon` glyph between `+` and `−` via a `setIcon(open)` helper on each toggle.
 8. **Hero stat count-up** — `IntersectionObserver` on `[data-i18n="hero.meta.1.k"]`, animates 0→100% with cubic ease-out on first intersection. i18n's `applyI18n()` will reset `textContent` to the translated value on language toggle — that's intentional.
-9. **i18n** — see below.
-10. **Chat manager** — see below.
+9. **Masthead date stamp** — populates `#masthead-date` once on load with a UTC editorial format (`Apr. 28 · 2026 / Tue / 22:18 UTC`). Static after first paint; not language-aware (the format is intentionally Latin-only).
+10. **Booking date-range mutual sync** — wires `#check_in` and `#check_out` so each sets the other's `min`/`max`, preventing inverted ranges client-side before the form is submitted.
+11. **i18n** — see below. The lang toggle also calls `history.replaceState()` to keep `?lang=` in the URL in sync with `localStorage`, so deep-links and hreflang alternates stay coherent without a reload.
+12. **Chat manager** — see below.
 
 #### i18n pattern (critical)
 
@@ -145,20 +160,21 @@ If you add a new field: (1) add `<input>` with `name=` matching the column, (2) 
 - `robots.txt` — allows all, disallows `/404.html`, points to `sitemap.xml`.
 - `sitemap.xml` — single-URL sitemap with `xhtml:link rel="alternate" hreflang` for ru/en/x-default. Update `<lastmod>` when content changes.
 - `404.html` — **self-contained**, inlines its own CSS variables (mirrors `--paper`/`--ink`/`--ox` from `styles.css`) and its own RU/EN dictionary inside an inline `<script>`. Does **not** load `styles.css` or `script.js`. **Fix-once-fix-twice applies**: if you change palette or copy in the main site, mirror it here. The page reads `localStorage['st-lang']` to match the visitor's language preference set on the main site.
-- `.gitignore` — covers OS junk, IDE configs, env files, `node_modules`, `bot/` runtime artefacts, and Claude Code session caches.
+- `og.svg` — 1200×630 social preview. Circular customs-stamp composition on the dark navy `--paper` ground, oxblood concentric rings, top arc `SECRETTRAVEL · CONCIERGE BOOKING SOCIETY`, bottom arc `EST. 2019 · WORLDWIDE · CRYPTO-SETTLED · APPROVED`, centre `✦ S T` + `APPROVED` block. Referenced by `og:image` / `twitter:image` in `index.html` and served as `image/svg+xml`. Edit in place — there is no PNG fallback. Keep palette aligned with `styles.css` (`--paper`, `--ink`, `--ox`).
+- `.gitignore` — covers OS junk, IDE configs, env files, `node_modules`, `bot/` runtime artefacts, `.audit-*` design-audit screenshots, and Claude Code session caches.
 - `bot/` — **empty placeholder directory** for a future Telegram-side bot (matching the chat manager's "forward to manager" intent). Currently unused — do not assume code lives there.
-- `docs/superpowers/specs/` — design specs produced by the `superpowers:brainstorming` workflow. Source of truth for in-flight features that haven't shipped yet. The current active spec is `2026-04-28-broadsheet-hero-redesign-design.md` (15-item bundle covering Sprint-1 polish + V1 Broadsheet hero). The earlier `2026-04-28-sprint-1-polish-pass-design.md` is marked SUPERSEDED and points to the broadsheet spec — keep that header pointer when superseding future specs so reviewers don't chase stale plans.
+- `docs/superpowers/specs/` — design specs produced by the `superpowers:brainstorming` workflow. Source of truth for in-flight design work. `2026-04-28-broadsheet-hero-redesign-design.md` (15-item Sprint-1 polish + V1 Broadsheet hero bundle) is **shipped** as of 2026-04-28 — keep the file as a record of decisions, but do not treat it as a TODO list. `2026-04-28-sprint-1-polish-pass-design.md` is marked SUPERSEDED and points to the broadsheet spec — preserve that header pointer when superseding future specs so reviewers don't chase stale plans.
 
 ## Placeholders that must be replaced before publishing
 
 - Telegram handle: `https://t.me/secrettravel` in `index.html` (contact section) and in `chat.r.contact` keys in both `I18N.ru` and `I18N.en`.
 - Email: `secrettravelll@gmail.com` in `index.html` contact section (real mailbox; replace if rotated).
-- Domain: `secrettravel.example` appears in **three files** — keep them in sync when changing the production domain:
-  1. `index.html` — `<link rel="canonical">`, `<link rel="alternate" hreflang>`, `og:url`, JSON-LD `url`.
+- Domain: production is `secrettravel.vercel.app`, hard-coded in **three files** — keep them in sync if the production domain changes (e.g. moving to a custom apex):
+  1. `index.html` — `<link rel="canonical">`, `<link rel="alternate" hreflang>` (×3), `og:url`, `og:image` absolute URL, JSON-LD `url` (TravelAgency + Organization).
   2. `sitemap.xml` — `<loc>` and all `<xhtml:link href>`.
   3. `robots.txt` — `Sitemap:` directive.
-  (`404.html` uses relative URLs — no domain reference there.)
-- Crypto wallet addresses are live in `index.html` `#pay` section: USDT TRC-20 (`TVz2…`) and BTC (`3FBX…`). The `[data-copy]` click handler copies them on click. Only TRC-20 is accepted for USDT — do not re-introduce ERC-20 copy without a corresponding ERC-20 address (the networks are not interchangeable; sending USDT-ERC-20 to a TRC-20 address is unrecoverable).
+  (`404.html` uses relative URLs — no domain reference there.) Also update `ALLOWED_ORIGINS` in `api/chat.js` so the new domain isn't rejected as a 403.
+- Crypto wallet addresses are **deliberately not in the markup** — the `#pay` section only names accepted methods (USDT TRC-20, BTC) and shows a `.pay-note` line saying "Реквизиты — после подтверждения брони". The operator (chat / Telegram) hands out a fresh per-booking address once dates and amount are agreed; the system prompt in `api/chat.js` enforces this. Do **not** re-introduce hard-coded wallet `<code>` blocks: it conflicts with the per-booking-address model and exposes a static target for spoofing/replay. The `[data-copy]` JS handler still exists for any future copyable element but currently has no consumers. Only TRC-20 is accepted for USDT — do not re-introduce ERC-20 copy without a corresponding ERC-20 wallet (the networks are not interchangeable; sending USDT-ERC-20 to a TRC-20 address is unrecoverable).
 - Supabase project (`jvdshxutzgxhxopcgifj`) and `bookings` table are **already provisioned** with RLS — the booking form is live and persists submissions. Use Supabase Dashboard → Table Editor → `bookings` to view incoming requests, or query via Supabase MCP.
 
 ## Things to avoid

@@ -521,6 +521,8 @@
       <h2 id="pay-h" data-i18n="pay.h2">Принимаем удобные для вас способы.</h2>
     </header>
 
+    <p class="pay-rationale reveal" data-i18n-html="pay.rationale">Бронируем напрямую — на Booking, Expedia, в авиакассах, своей картой и счётом. Поэтому только крипта и только предоплата: получаем USDT или BTC, тут же закрываем бронь на нашей стороне, присылаем подтверждение от системы. Реквизиты выдаём <strong>под каждую бронь отдельно</strong> — это уникальный адрес под вашу сделку, а не общий кошелёк.</p>
+
     <div class="pay-grid" data-spotlight-group>
       <article class="pay-card reveal">
         <div class="pay-icon" aria-hidden="true">
@@ -528,19 +530,15 @@
         </div>
         <h3>USDT</h3>
         <p data-i18n-html="pay.usdt.p">Сеть <strong>TRC-20</strong>.</p>
-        <div class="wallet-box">
-          <code class="wallet-addr" data-copy="TVz2A95fY1ZL7GVxPd5mj7stqMSi3GFUid" aria-label="Copy USDT Address">TVz2A95fY1ZL7GVxPd5mj7stqMSi3GFUid</code>
-        </div>
+        <p class="pay-note" data-i18n="pay.usdt.note">Реквизиты — после подтверждения брони.</p>
       </article>
       <article class="pay-card reveal">
         <div class="pay-icon" aria-hidden="true">
           <svg viewBox="0 0 32 32" width="32" height="32"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 9v14M15 9v14M10 12h9a3 3 0 0 1 0 6H10M10 18h10a3 3 0 0 1 0 6H10" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
         <h3>Bitcoin</h3>
-        <p data-i18n="pay.btc.p">Оплата напрямую на наш кошелёк.</p>
-        <div class="wallet-box">
-          <code class="wallet-addr" data-copy="3FBXxiE8UHxpRL4iCHhmXRWfqjC7Ws4pL6" aria-label="Copy Bitcoin Address">3FBXxiE8UHxpRL4iCHhmXRWfqjC7Ws4pL6</code>
-        </div>
+        <p data-i18n="pay.btc.p">Перевод напрямую.</p>
+        <p class="pay-note" data-i18n="pay.btc.note">Реквизиты — после подтверждения брони.</p>
       </article>
       <article class="pay-card pay-refund reveal">
         <h3 data-i18n="pay.refund.h">Возврат</h3>
@@ -602,6 +600,14 @@
           <span class="faq-icon" aria-hidden="true">+</span>
         </summary>
         <p data-i18n="faq.a6">Да. При заселении в отель мы остаёмся на связи и помогаем с возможными вопросами — депозит, late check-in и так далее.</p>
+      </details>
+
+      <details class="faq-item reveal">
+        <summary>
+          <span data-i18n="faq.q7">Почему только крипта и почему кошелёк не виден на сайте?</span>
+          <span class="faq-icon" aria-hidden="true">+</span>
+        </summary>
+        <p data-i18n="faq.a7">Мы оформляем бронь со своей стороны — нашей картой, нашим счётом, нашим аккаунтом в системе. От вас приходит крипта, мы тут же закрываем бронь и присылаем подтверждение. Под каждую бронь — отдельный адрес: так чище для нас и безопаснее для вас. Реквизиты появляются в чате после того, как вы согласовали даты и сумму.</p>
       </details>
     </div>
   </section>
