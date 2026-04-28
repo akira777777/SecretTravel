@@ -347,27 +347,7 @@
     }
   }
 
-  // --- Hero stat count-up animation ----------------------------------------
-  if ('IntersectionObserver' in window) {
-    const countEl = document.querySelector('[data-i18n="hero.meta.1.k"]');
-    if (countEl) {
-      const io = new IntersectionObserver((entries) => {
-        if (!entries[0].isIntersecting) return;
-        io.disconnect();
-        let startTs = 0;
-        const end = 100, dur = 1400;
-        const tick = (ts) => {
-          if (!startTs) startTs = ts;
-          const p = Math.min((ts - startTs) / dur, 1);
-          const eased = 1 - Math.pow(1 - p, 3);
-          countEl.textContent = Math.round(eased * end) + '%';
-          if (p < 1) requestAnimationFrame(tick);
-        };
-        requestAnimationFrame(tick);
-      }, { threshold: 0.6 });
-      io.observe(countEl);
-    }
-  }
+  // Hero stat count-up animation disabled — hero.meta.1.k is now text ("до 50%"), not a number
 
   // --- Pricing card count-up (reuses hero pattern) -------------------------
   if ('IntersectionObserver' in window
