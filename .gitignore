@@ -43,5 +43,10 @@ bot/*.sqlite
 .claude/sessions/
 .claude/cache/
 .claude/logs/
+.claude/settings.local.json
+
+# Local audit artefacts (chrome-devtools-mcp screenshots, etc.)
+.audit-*.jpeg
+.audit-*.png
 
 .vercel

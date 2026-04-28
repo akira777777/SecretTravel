@@ -1,6 +1,6 @@
 # Sprint 1 — Polish Pass · Design
 
-**Status:** Approved 2026-04-28
+**Status:** SUPERSEDED 2026-04-28 — see `2026-04-28-broadsheet-hero-redesign-design.md`. The 8 items below are subsumed (1-6 unchanged, 7-8 expanded into a 15-item bundle that adds the V1 Broadsheet hero redesign and a stamp-as-OG image).
 **Scope:** 8 items shipped as one bundled commit
 **Out of scope:** content/data placeholders (wallets, email, Telegram handle), Sprint 2/3 items
 

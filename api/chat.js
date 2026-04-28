@@ -17,7 +17,7 @@ const RU_SYSTEM = `Ты — оператор сервиса SecretTravel. Бро
 * 70% оформление день в день по этим же направлениям
 * авиа — 50%, оформляем за 1–7 дней до вылета
 * экскурсии — 50%, аренда авто — 60%
-* минималка на все услуги — 12 000 ₽ (или $130 по курсу)
+* минималка — $270 в нашу сторону (рублёвый эквивалент по курсу на день оплаты)
 * лимит брони — $7,000, выше — обсуждается индивидуально
 
 Не работаем:
@@ -51,7 +51,7 @@ Rates (off the rack rate):
 * 70% same-day on those destinations
 * flights — 50%, booked 1–7 days before departure
 * tours — 50%, car rental — 60%
-* minimum on all services — $130 (or ₽12,000 at the day's rate)
+* minimum service fee — $270 our take (RUB equivalent at the day's rate)
 * per-booking limit — $7,000, above is case by case
 
 We don't book:

@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Static landing page for **SecretTravel**, a concierge booking service (hotels, apartments, flights, tours, car rentals) with crypto payment (USDT TRC-20/ERC-20, BTC). The site is a single Russian/English bilingual page derived verbatim from `C:\Users\fear7\Desktop\Текстовый документ (2).txt` — that file is the source-of-truth for pricing percentages (50/60/65/70%), the ₽12,000 minimum, the excluded countries list (Egypt, Maldives, India, Vietnam, Dubai), and the Russia/CIS flight restriction. **Do not invent terms, percentages, or guarantees that are not in that document.**
 
-**Currency convention:** RU strings show `₽12 000`, EN strings show `$130` (≈12 000 ₽ at ~92 ₽/$). The booking form sets `preferred_currency` to `RUB` for `currentLang === 'ru'` and `USD` for `'en'`. If you change the rate, update **both** languages (`prices.c1.li3`, `prices.c2.li1`, `chat.r.prices`, `faq.a3` in `I18N.en`) and the form-payload mapping simultaneously.
+**Currency convention:** Pricing is denominated in **USD** ("в нашу сторону" = our fee, not rack rate). Minimum service fee is **$270** (our take, RUB equivalent computed at the day's rate). Per-booking ceiling is **$7,000** (above is case-by-case). The booking form sets `preferred_currency` to `RUB` for `currentLang === 'ru'` and `USD` for `'en'`. If the minimum or ceiling changes, update **both** languages (`prices.c1.li3`, `prices.c2.li1`, `chat.r.prices`, `chat.r.limit`, `faq.a3`) **and** the system prompts in `api/chat.js` (RU + EN) simultaneously.
 
 **Production:** https://secrettravel.vercel.app — deployed to Vercel from `main` (`origin/main` is `https://github.com/akira777777/SecretTravel.git`).
 
