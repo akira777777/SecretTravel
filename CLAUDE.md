@@ -152,7 +152,7 @@ If you add a new field: (1) add `<input>` with `name=` matching the column, (2) 
 ## Placeholders that must be replaced before publishing
 
 - Telegram handle: `https://t.me/secrettravel` in `index.html` (contact section) and in `chat.r.contact` keys in both `I18N.ru` and `I18N.en`.
-- Email: `hello@secrettravel.example` in `index.html`.
+- Email: `secrettravelll@gmail.com` in `index.html` contact section (real mailbox; replace if rotated).
 - Domain: `secrettravel.example` appears in **three files** — keep them in sync when changing the production domain:
   1. `index.html` — `<link rel="canonical">`, `<link rel="alternate" hreflang>`, `og:url`, JSON-LD `url`.
   2. `sitemap.xml` — `<loc>` and all `<xhtml:link href>`.
