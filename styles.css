@@ -701,13 +701,24 @@ section { padding-block: var(--space-section); }
   font-family: var(--serif);
   font-style: italic;
   font-weight: 300;
-  font-size: clamp(2.4rem, 1.2rem + 4vw, 5.5rem);
+  font-size: clamp(2.8rem, 1.4rem + 4.5vw, 6rem);
   line-height: 0.95;
   color: var(--ox);
   letter-spacing: -0.04em;
   font-variation-settings: "opsz" 144;
   font-feature-settings: 'onum' 1;
   white-space: nowrap;
+  display: flex;
+  align-items: baseline;
+  gap: 0.15em;
+}
+.card-prefix {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 0.38em;
+  color: var(--ink-3);
+  letter-spacing: 0;
 }
 .card-price small {
   font-family: var(--serif);
