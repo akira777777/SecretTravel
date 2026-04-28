@@ -682,9 +682,7 @@ section { padding-block: var(--space-section); }
 .card:hover { background: var(--paper-ink); }
 .card:last-child { border-right: 0; }
 .card-lg {
-  grid-row: span 2;
   background: var(--paper-deep);
-  border-bottom: 1px solid var(--rule);
 }
 .card-top {
   display: flex;
