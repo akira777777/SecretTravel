@@ -1038,8 +1038,27 @@ section { padding-block: var(--space-section); }
 @media (max-width: 720px) {
   .bf-disclaimer { margin-left: 0; text-align: left; }
 }
-.bf-submit { min-width: 220px; justify-content: center; }
+.bf-submit { min-width: 220px; justify-content: center; position: relative; }
 .bf-submit:disabled { opacity: 0.55; cursor: progress; }
+.bf-submit.is-loading .btn-label,
+.bf-submit.is-loading .btn-arrow { opacity: 0; }
+.bf-submit.is-loading::after {
+  content: '';
+  position: absolute;
+  width: 1.2rem; height: 1.2rem;
+  border: 2px solid var(--paper);
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.bf-field input.is-invalid,
+.bf-field select.is-invalid,
+.bf-field textarea.is-invalid {
+  border-color: var(--ox) !important;
+  background: oklch(20% 0.10 25 / 0.2);
+}
 
 .bf-status {
   font-family: var(--mono);

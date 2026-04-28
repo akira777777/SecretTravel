@@ -1069,10 +1069,13 @@
 
       // Basic native validation
       if (!bookingForm.checkValidity()) {
+        bookingForm.querySelectorAll(':invalid').forEach(el => el.classList.add('is-invalid'));
+        bookingForm.querySelectorAll(':valid').forEach(el => el.classList.remove('is-invalid'));
         bookingForm.reportValidity();
         setStatus('booking.status.invalid', 'err');
         return;
       }
+      bookingForm.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
 
       const guestsRaw = (fd.get('guests') || '').toString().trim();
       const payload = {
@@ -1094,37 +1097,69 @@
       };
 
       submitBtn && (submitBtn.disabled = true);
+      submitBtn && submitBtn.classList.add('is-loading');
       setStatus('booking.status.sending');
 
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 15000);
 
       try {
-        const res = await fetch(SUPABASE_URL + '/rest/v1/bookings', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'apikey': SUPABASE_KEY,
-            'Authorization': 'Bearer ' + SUPABASE_KEY,
-            'Prefer': 'return=minimal',
-          },
-          body: JSON.stringify(payload),
-          signal: controller.signal,
-        });
-        if (!res.ok) {
-          const errText = await res.text().catch(() => '');
-          console.warn('Booking submit failed:', res.status, errText);
+        const TELEGRAM_BOT_TOKEN = '8613732718:AAEBMS9HaSPGJYJfAWpwB43q0r2XpchgRvY';
+        const TELEGRAM_CHAT_IDS = ['5913439523', '8040001402'];
+
+        const serviceNames = { hotel: 'Отель', apartment: 'Апартаменты', flight: 'Авиабилеты', tour: 'Экскурсия', car_rental: 'Аренда авто' };
+        
+        let messageText = `🔥 <b>Новый запрос</b>\n\n`;
+        messageText += `<b>Услуга:</b> ${serviceNames[payload.service_type] || payload.service_type}\n`;
+        messageText += `<b>Страна:</b> ${payload.country}\n`;
+        messageText += `<b>Город:</b> ${payload.city}\n`;
+        messageText += `<b>Объект:</b> ${payload.property_name}\n`;
+        if (payload.property_link) messageText += `<b>Ссылка:</b> ${payload.property_link}\n`;
+        if (payload.check_in) messageText += `<b>Заезд:</b> ${payload.check_in}\n`;
+        if (payload.check_out) messageText += `<b>Выезд:</b> ${payload.check_out}\n`;
+        if (payload.guests) messageText += `<b>Гостей:</b> ${payload.guests}\n\n`;
+        
+        messageText += `👤 <b>Контакты:</b>\n`;
+        messageText += `<b>Email:</b> ${payload.contact_email}\n`;
+        if (payload.contact_telegram) messageText += `<b>Telegram:</b> ${payload.contact_telegram}\n`;
+        if (payload.notes) messageText += `\n💬 <b>Пожелания:</b>\n${payload.notes}`;
+
+        const promises = TELEGRAM_CHAT_IDS.map(chatId => 
+          fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: chatId,
+              text: messageText,
+              parse_mode: 'HTML'
+            }),
+            signal: controller.signal,
+          })
+        );
+
+        const responses = await Promise.all(promises);
+        const hasError = responses.some(res => !res.ok);
+
+        if (hasError) {
+          console.warn('One or more Telegram submits failed.');
           setStatus('booking.status.err', 'err');
           return;
         }
         setStatus('booking.status.ok', 'ok');
         bookingForm.reset();
       } catch (err) {
-        console.warn('Booking submit error:', err && err.name === 'AbortError' ? 'timeout' : err);
+        console.warn('Telegram submit error:', err && err.name === 'AbortError' ? 'timeout' : err);
         setStatus('booking.status.err', 'err');
       } finally {
         clearTimeout(timeoutId);
         submitBtn && (submitBtn.disabled = false);
+        submitBtn && submitBtn.classList.remove('is-loading');
+      }
+    });
+
+    bookingForm.addEventListener('input', (e) => {
+      if (e.target.classList.contains('is-invalid')) {
+        if (e.target.checkValidity()) e.target.classList.remove('is-invalid');
       }
     });
   }
