@@ -87,7 +87,7 @@ module.exports = async function handler(req, res) {
     if (!upstream.ok) {
       const errBody = await upstream.text().catch(() => '');
       console.error('[chat] Anthropic error', upstream.status, errBody.slice(0, 300));
-      return res.status(502).json({ error: 'Upstream error', code: upstream.status, detail: errBody.slice(0, 200) });
+      return res.status(502).json({ error: 'Upstream error', code: upstream.status });
     }
 
     const data = await upstream.json();
