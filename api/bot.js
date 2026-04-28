@@ -50,7 +50,7 @@ module.exports = async function handler(req, res) {
           inline_keyboard: [
             [{ text: '🌐 Забронировать на сайте', url: 'https://secrettravel.vercel.app/' }],
             [{ text: '📋 Наши условия', callback_data: 'conditions' }],
-            [{ text: '💬 Связаться с менеджером', url: 'https://t.me/fear7' }] // Placeholder username
+            [{ text: '💬 Связаться с менеджером', url: 'https://t.me/younghustle45' }] // Manager username
           ]
         };
 
