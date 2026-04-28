@@ -112,18 +112,20 @@
   if (allowMotion) {
     const groups = document.querySelectorAll('[data-spotlight-group]');
     groups.forEach((group) => {
-      const cards = group.children;
+      const cards = Array.from(group.children);
       let lastEvt = null;
       let scheduled = false;
       const flush = () => {
         scheduled = false;
         if (!lastEvt) return;
-        for (const card of cards) {
-          const r = card.getBoundingClientRect();
-          card.style.setProperty('--mx', (lastEvt.clientX - r.left) + 'px');
-          card.style.setProperty('--my', (lastEvt.clientY - r.top) + 'px');
+        // Batch reads to avoid layout thrashing
+        const rects = cards.map(c => c.getBoundingClientRect());
+        // Batch writes
+        cards.forEach((card, i) => {
+          card.style.setProperty('--mx', (lastEvt.clientX - rects[i].left) + 'px');
+          card.style.setProperty('--my', (lastEvt.clientY - rects[i].top) + 'px');
           card.style.setProperty('--spot-active', '1');
-        }
+        });
       };
       group.addEventListener('pointermove', (e) => {
         lastEvt = e;
@@ -172,11 +174,17 @@
     const heroTitle = document.querySelector('.hero-title');
     const heroLede = document.querySelector('.hero .lede');
     const heroOrbs = document.querySelectorAll('.hero-orb');
+    
+    // Shared cached rect for hero to avoid layout thrashing
+    let cachedHeroRect = null;
+    window.addEventListener('resize', () => { cachedHeroRect = null; }, { passive: true });
+
     if (heroEl && heroOrbs.length) {
       let lx = 0, ly = 0, pScheduled = false;
       const flushParallax = () => {
         pScheduled = false;
-        const { width, height } = heroEl.getBoundingClientRect();
+        if (!cachedHeroRect) return;
+        const { width, height } = cachedHeroRect;
         const nx = (lx - width / 2) / (width / 2);
         const ny = (ly - height / 2) / (height / 2);
         if (heroTitle) heroTitle.style.transform = `translate(${nx * -7}px, ${ny * -4}px)`;
@@ -186,10 +194,13 @@
           orb.style.transform = `translate(${nx * d}px, ${ny * d}px)`;
         });
       };
+      heroEl.addEventListener('pointerenter', () => {
+        cachedHeroRect = heroEl.getBoundingClientRect();
+      }, { passive: true });
       heroEl.addEventListener('pointermove', (e) => {
-        const rect = heroEl.getBoundingClientRect();
-        lx = e.clientX - rect.left;
-        ly = e.clientY - rect.top;
+        if (!cachedHeroRect) cachedHeroRect = heroEl.getBoundingClientRect();
+        lx = e.clientX - cachedHeroRect.left;
+        ly = e.clientY - cachedHeroRect.top;
         if (!pScheduled) { pScheduled = true; requestAnimationFrame(flushParallax); }
       }, { passive: true });
       heroEl.addEventListener('pointerleave', () => {
@@ -219,9 +230,9 @@
       };
 
       trailHero.addEventListener('pointerenter', (e) => {
-        const r = trailHero.getBoundingClientRect();
-        cx = tx = e.clientX - r.left;
-        cy = ty = e.clientY - r.top;
+        if (!cachedHeroRect) cachedHeroRect = trailHero.getBoundingClientRect();
+        cx = tx = e.clientX - cachedHeroRect.left;
+        cy = ty = e.clientY - cachedHeroRect.top;
         trail.style.setProperty('--tx', cx + 'px');
         trail.style.setProperty('--ty', cy + 'px');
         trailHero.classList.add('is-tracking');
@@ -229,9 +240,9 @@
       }, { passive: true });
 
       trailHero.addEventListener('pointermove', (e) => {
-        const r = trailHero.getBoundingClientRect();
-        tx = e.clientX - r.left;
-        ty = e.clientY - r.top;
+        if (!cachedHeroRect) cachedHeroRect = trailHero.getBoundingClientRect();
+        tx = e.clientX - cachedHeroRect.left;
+        ty = e.clientY - cachedHeroRect.top;
       }, { passive: true });
 
       trailHero.addEventListener('pointerleave', () => {
@@ -398,7 +409,7 @@
       'nav.how': 'Как работаем',
       'nav.prices': 'Тарифы',
       'nav.scope': 'География',
-      'nav.logbook': 'Журнал',
+
       'nav.order': 'Как заказать',
       'nav.booking': 'Запрос',
       'nav.pay': 'Оплата',
@@ -455,26 +466,7 @@
       'scope.no.h': 'Не оформляем',
       'scope.no.li1': 'Отели в ряде курортных направлений: <strong>Египет, Мальдивы, Индия, Вьетнам, Дубай</strong> и некоторые другие. Полный список — у нас, всегда подскажем альтернативу.',
       'scope.no.li2': 'Авиабилеты на рейсы, связанные с <strong>РФ и странами СНГ</strong>.',
-      'logbook.eyebrow': '§ 3½ · Из журнала',
-      'logbook.h2': 'Свежие записи диспетчерской.',
-      'logbook.sub': 'Закрытые брони последней недели — без имён и сумм. Журнал ведётся вручную.',
-      'logbook.h.date': 'Дата',
-      'logbook.h.route': 'Направление',
-      'logbook.h.service': 'Услуга',
-      'logbook.h.status': 'Статус',
-      'logbook.r1.service': 'Перелёт + отель',
-      'logbook.r1.status': 'Подтверждено',
-      'logbook.r2.service': 'Перелёт',
-      'logbook.r2.status': 'Подтверждено',
-      'logbook.r3.service': 'Апартаменты',
-      'logbook.r3.status': 'Перенесено',
-      'logbook.r4.service': 'Перелёт + отель',
-      'logbook.r4.status': 'Подтверждено',
-      'logbook.r5.service': 'Тур + авто',
-      'logbook.r5.status': 'Подтверждено',
-      'logbook.r6.service': 'Перелёт',
-      'logbook.r6.status': 'Подтверждено',
-      'logbook.note': 'Без имён, без сумм, без ссылок. Только маршрут, услуга и итог.',
+
       'order.eyebrow': '§ 4 · Как оформить заказ',
       'order.h2': 'Четыре шага. Без анкет и звонков.',
       'order.s1.h': 'Пришлите ссылку',
@@ -576,7 +568,7 @@
       'nav.how': 'How it works',
       'nav.prices': 'Pricing',
       'nav.scope': 'Coverage',
-      'nav.logbook': 'Logbook',
+
       'nav.order': 'How to order',
       'nav.booking': 'Request',
       'nav.pay': 'Payment',
@@ -633,26 +625,7 @@
       'scope.no.h': 'We don\'t handle',
       'scope.no.li1': 'Hotels in select resort regions: <strong>Egypt, Maldives, India, Vietnam, Dubai</strong> and a few others. Ask us for the full list — we\'ll always suggest an alternative.',
       'scope.no.li2': 'Flights connected to <strong>Russia and CIS countries</strong>.',
-      'logbook.eyebrow': '§ 3½ · From the logbook',
-      'logbook.h2': 'Recent dispatches.',
-      'logbook.sub': 'Closed bookings from the past week — no names, no amounts. Logbook is hand-kept.',
-      'logbook.h.date': 'Date',
-      'logbook.h.route': 'Route',
-      'logbook.h.service': 'Service',
-      'logbook.h.status': 'Status',
-      'logbook.r1.service': 'Flight + hotel',
-      'logbook.r1.status': 'Confirmed',
-      'logbook.r2.service': 'Flight',
-      'logbook.r2.status': 'Confirmed',
-      'logbook.r3.service': 'Apartment',
-      'logbook.r3.status': 'Rerouted',
-      'logbook.r4.service': 'Flight + hotel',
-      'logbook.r4.status': 'Confirmed',
-      'logbook.r5.service': 'Tour + car',
-      'logbook.r5.status': 'Confirmed',
-      'logbook.r6.service': 'Flight',
-      'logbook.r6.status': 'Confirmed',
-      'logbook.note': 'No names, no amounts, no links. Just route, service, outcome.',
+
       'order.eyebrow': '§ 4 · How to order',
       'order.h2': 'Four steps. No forms, no calls.',
       'order.s1.h': 'Send the link',
