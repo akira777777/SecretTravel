@@ -269,7 +269,10 @@
     document.querySelectorAll('.faq-item').forEach((item) => {
       const summary = item.querySelector('summary');
       const body = item.querySelector('p');
+      const icon = item.querySelector('.faq-icon');
       if (!summary || !body) return;
+      const setIcon = (open) => { if (icon) icon.textContent = open ? '−' : '+'; };
+      setIcon(item.open);
       summary.addEventListener('click', (e) => {
         e.preventDefault();
         if (item.open) {
@@ -279,9 +282,11 @@
           body.style.transition = 'height 300ms var(--ease), opacity 250ms ease';
           body.style.height = '0';
           body.style.opacity = '0';
+          setIcon(false);
           setTimeout(() => { item.open = false; body.style.cssText = ''; }, 310);
         } else {
           item.open = true;
+          setIcon(true);
           const h = body.scrollHeight;
           body.style.height = '0';
           body.style.overflow = 'hidden';
@@ -294,6 +299,33 @@
         }
       });
     });
+  }
+
+  // --- Masthead date (UTC editorial timestamp) ----------------------------
+  {
+    const dateEl = document.getElementById('masthead-date');
+    if (dateEl) {
+      const d = new Date();
+      const pad = (n) => String(n).padStart(2, '0');
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      dateEl.textContent = `${months[d.getUTCMonth()]}. ${d.getUTCDate()} · ${d.getUTCFullYear()} / ${days[d.getUTCDay()]} / ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())} UTC`;
+    }
+  }
+
+  // --- Booking form: mutual check_in / check_out min-max ------------------
+  {
+    const ci = document.querySelector('input[name="check_in"]');
+    const co = document.querySelector('input[name="check_out"]');
+    if (ci && co) {
+      const sync = () => {
+        if (ci.value) co.min = ci.value;
+        if (co.value) ci.max = co.value;
+      };
+      ci.addEventListener('change', sync);
+      co.addEventListener('change', sync);
+      sync();
+    }
   }
 
   // --- Hero stat count-up animation ----------------------------------------
@@ -334,6 +366,9 @@
       'nav.pay': 'Оплата',
       'nav.faq': 'FAQ',
       'nav.contact': 'Связаться',
+      'masthead.title': 'The Concierge Quarterly · Вып. 01 · Весна',
+      'masthead.section': 'Том VI · Бронирование, Авиа, Экскурсии · Крипто-расчёт',
+      'hero.stamp': 'Concierge · Worldwide · Crypto-Settled',
       'hero.eyebrow': 'Концьерж‑бронирование',
       'hero.title': '<span class="word">Бронируем</span> <span class="word">там,</span> <span class="word">где</span> <span class="word">остальные</span> <span class="word"><em>разводят</em></span> <span class="word"><em>руками.</em></span>',
       'hero.lede': 'Помогаем комфортно и надёжно бронировать отели, апартаменты, авиабилеты и другие туристические услуги — даже в сложных ситуациях. Срочно, прозрачно, с возвратом, если не получилось.',
@@ -482,6 +517,9 @@
       'nav.pay': 'Payment',
       'nav.faq': 'FAQ',
       'nav.contact': 'Contact',
+      'masthead.title': 'The Concierge Quarterly · Iss. 01 · Spring',
+      'masthead.section': 'Vol. VI · Booking, Flights, Tours · Crypto-settled',
+      'hero.stamp': 'Concierge · Worldwide · Crypto-Settled',
       'hero.eyebrow': 'Concierge booking',
       'hero.title': '<span class="word">We</span> <span class="word">book</span> <span class="word">where</span> <span class="word">others</span> <span class="word"><em>throw</em></span> <span class="word"><em>up&nbsp;hands.</em></span>',
       'hero.lede': 'We help you book hotels, apartments, flights and other travel services comfortably and reliably — even in tricky situations. Fast, transparent, with a full refund if it doesn\'t work out.',
@@ -702,6 +740,11 @@
     langBtn.addEventListener('click', () => {
       currentLang = currentLang === 'ru' ? 'en' : 'ru';
       safeStorageSet(STORAGE_KEY, currentLang);
+      try {
+        const params = new URLSearchParams(location.search);
+        params.set('lang', currentLang);
+        history.replaceState({}, '', location.pathname + '?' + params.toString() + location.hash);
+      } catch (_) {}
       applyI18n();
       renderChat();
     });
