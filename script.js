@@ -773,7 +773,11 @@
         signal: ctrl.signal,
       });
       clearTimeout(tid);
-      if (!res.ok) return null;
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        console.warn('[chat] API error', res.status, body.code ?? body.error);
+        return null;
+      }
       const { reply } = await res.json();
       return typeof reply === 'string' && reply ? reply : null;
     } catch {

@@ -57,9 +57,8 @@ module.exports = async function handler(req, res) {
   const safeLang = lang === 'en' ? 'en' : 'ru';
   const system = safeLang === 'en' ? EN_SYSTEM : RU_SYSTEM;
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = (process.env.ANTHROPIC_API_KEY || '').trim();
   if (!apiKey) {
-    // Graceful degradation — frontend will fall back to rule-based responses
     return res.status(503).json({ error: 'Service unavailable' });
   }
 
@@ -87,12 +86,16 @@ module.exports = async function handler(req, res) {
 
     if (!upstream.ok) {
       const errBody = await upstream.text().catch(() => '');
-      console.error('[chat] Anthropic error', upstream.status, errBody.slice(0, 200));
-      return res.status(502).json({ error: 'Upstream error' });
+      console.error('[chat] Anthropic error', upstream.status, errBody.slice(0, 300));
+      return res.status(502).json({ error: 'Upstream error', code: upstream.status });
     }
 
     const data = await upstream.json();
     const reply = data?.content?.[0]?.text?.trim() ?? '';
+    if (!reply) {
+      console.error('[chat] Empty reply from Anthropic');
+      return res.status(502).json({ error: 'Empty reply' });
+    }
 
     return res.json({ reply });
   } catch (err) {
