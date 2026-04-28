@@ -358,6 +358,35 @@
     }
   }
 
+  // --- Pricing card count-up (reuses hero pattern) -------------------------
+  if ('IntersectionObserver' in window
+      && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const priceCards = document.querySelectorAll('#prices .card-price');
+    if (priceCards.length) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          io.unobserve(entry.target);
+          const node = entry.target.firstChild;
+          if (!node || node.nodeType !== 3) return;
+          const target = parseInt(node.nodeValue, 10);
+          if (!Number.isFinite(target)) return;
+          let startTs = 0;
+          const dur = 900;
+          const animTick = (ts) => {
+            if (!startTs) startTs = ts;
+            const p = Math.min((ts - startTs) / dur, 1);
+            const eased = 1 - Math.pow(1 - p, 3);
+            node.nodeValue = String(Math.round(eased * target));
+            if (p < 1) requestAnimationFrame(animTick);
+          };
+          requestAnimationFrame(animTick);
+        });
+      }, { threshold: 0.6 });
+      priceCards.forEach((el) => io.observe(el));
+    }
+  }
+
   // =========================================================================
   // i18n (RU / EN)
   // =========================================================================
