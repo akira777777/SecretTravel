@@ -301,16 +301,24 @@
     });
   }
 
-  // --- Masthead date (UTC editorial timestamp) ----------------------------
+  // --- Masthead date + ON DUTY indicator (UTC, refreshed every 60s) -------
   {
     const dateEl = document.getElementById('masthead-date');
-    if (dateEl) {
+    const timeEl = document.getElementById('duty-time');
+    const pad = (n) => String(n).padStart(2, '0');
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const tick = () => {
       const d = new Date();
-      const pad = (n) => String(n).padStart(2, '0');
-      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-      dateEl.textContent = `${months[d.getUTCMonth()]}. ${d.getUTCDate()} · ${d.getUTCFullYear()} / ${days[d.getUTCDay()]} / ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())} UTC`;
-    }
+      if (dateEl) {
+        dateEl.textContent = `${months[d.getUTCMonth()]}. ${d.getUTCDate()} · ${d.getUTCFullYear()} / ${days[d.getUTCDay()]} / ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())} UTC`;
+      }
+      if (timeEl) {
+        timeEl.textContent = `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}`;
+      }
+    };
+    tick();
+    if (dateEl || timeEl) setInterval(tick, 60_000);
   }
 
   // --- Booking form: mutual check_in / check_out min-max ------------------
@@ -368,6 +376,7 @@
       'nav.contact': 'Связаться',
       'masthead.title': 'The Concierge Quarterly · Вып. 01 · Весна',
       'masthead.section': 'Том VI · Бронирование, Авиа, Экскурсии · Крипто-расчёт',
+      'duty.label': 'На связи',
       'hero.stamp': 'Concierge · Worldwide · Crypto-Settled',
       'hero.eyebrow': 'Концьерж‑бронирование',
       'hero.title': '<span class="word">Делаем</span> <span class="word">путешествия</span> <span class="word">и</span> <span class="word">отдых</span> <span class="word"><em>доступнее.</em></span>',
@@ -524,6 +533,7 @@
       'nav.contact': 'Contact',
       'masthead.title': 'The Concierge Quarterly · Iss. 01 · Spring',
       'masthead.section': 'Vol. VI · Booking, Flights, Tours · Crypto-settled',
+      'duty.label': 'On duty',
       'hero.stamp': 'Concierge · Worldwide · Crypto-Settled',
       'hero.eyebrow': 'Concierge booking',
       'hero.title': '<span class="word">We</span> <span class="word">make</span> <span class="word">travel</span> <span class="word">and</span> <span class="word">leisure</span> <span class="word"><em>more&nbsp;accessible.</em></span>',
