@@ -26,25 +26,51 @@
     targets.forEach((el) => io.observe(el));
   }
 
-  // --- Scroll progress bar -------------------------------------------------
+  // --- Unified Scroll Handling (Progress Bar + Nav Visibility) ------------
+  // Consolidating separate listeners into a single rAF-throttled handler
+  // to reduce main-thread overhead during scroll.
   const progress = document.querySelector('.scroll-progress');
-  if (progress) {
+  const topBar = document.querySelector('.top');
+
+  if (progress || topBar) {
     let ticking = false;
-    const update = () => {
+    let lastScrollY = window.scrollY;
+
+    const updateScrollEffects = () => {
+      const y = window.scrollY;
       const h = document.documentElement;
-      const scrolled = h.scrollTop;
-      const max = h.scrollHeight - h.clientHeight;
-      const pct = max > 0 ? (scrolled / max) * 100 : 0;
-      progress.style.setProperty('--progress', pct.toFixed(2) + '%');
+
+      // 1. Progress Bar: update the thin oxblood thread at the top
+      if (progress) {
+        const max = h.scrollHeight - h.clientHeight;
+        const pct = max > 0 ? (y / max) * 100 : 0;
+        progress.style.setProperty('--progress', pct.toFixed(2) + '%');
+      }
+
+      // 2. Nav Visibility: hide on scroll down, show on scroll up
+      if (topBar) {
+        if (y < 80) {
+          topBar.classList.remove('top--hidden');
+        } else if (y > lastScrollY + 8) {
+          topBar.classList.add('top--hidden');
+        } else if (y < lastScrollY - 8) {
+          topBar.classList.remove('top--hidden');
+        }
+      }
+
+      lastScrollY = y;
       ticking = false;
     };
+
     window.addEventListener('scroll', () => {
       if (!ticking) {
-        requestAnimationFrame(update);
+        requestAnimationFrame(updateScrollEffects);
         ticking = true;
       }
     }, { passive: true });
-    update();
+
+    // Initial sync
+    updateScrollEffects();
   }
 
   // --- Mobile menu toggle --------------------------------------------------
@@ -77,22 +103,7 @@
     });
   }
 
-  // --- Scroll-direction nav hide/show ------------------------------------
-  const topBar = document.querySelector('.top');
-  if (topBar) {
-    let lastScrollY = 0;
-    window.addEventListener('scroll', () => {
-      const y = window.scrollY;
-      if (y < 80) {
-        topBar.classList.remove('top--hidden');
-      } else if (y > lastScrollY + 8) {
-        topBar.classList.add('top--hidden');
-      } else if (y < lastScrollY - 8) {
-        topBar.classList.remove('top--hidden');
-      }
-      lastScrollY = y;
-    }, { passive: true });
-  }
+
 
   // --- Assign stagger indices to grouped reveal children -----------------
   document.querySelectorAll('.tiles, .bento, .timeline, .pay-grid').forEach((group) => {
